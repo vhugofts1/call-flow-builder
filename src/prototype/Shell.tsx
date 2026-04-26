@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { ScreenId } from "./types";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Zap, ChevronDown } from "lucide-react";
+import { ChevronLeft, Zap, ChevronDown, LogIn, LogOut } from "lucide-react";
 import { useProfile } from "./ProfileContext";
 import {
   DropdownMenu,
@@ -36,7 +37,7 @@ interface ShellProps {
 }
 
 export const Shell = ({ current, onNavigate, onBack, title, subtitle, children, device = "mobile" }: ShellProps) => {
-  const { profile, setProfileId, profiles } = useProfile();
+  const { profile, setProfileId, profiles, authedAtendente, signOut } = useProfile();
   const roleColor: Record<string, string> = {
     solicitante: "text-primary border-primary/40 bg-primary/10",
     atendente: "text-accent border-accent/40 bg-accent/10",
@@ -118,6 +119,32 @@ export const Shell = ({ current, onNavigate, onBack, title, subtitle, children, 
                     </div>
                   </DropdownMenuItem>
                 ))}
+                <DropdownMenuSeparator />
+                {authedAtendente ? (
+                  <>
+                    <DropdownMenuItem
+                      onClick={() => setProfileId("auth")}
+                      className={cn("flex items-start gap-3 py-2", profile.id === authedAtendente.id && "bg-secondary")}
+                    >
+                      <span className={cn("flex h-8 w-8 items-center justify-center rounded-full border text-[11px] font-bold", roleColor.atendente)}>
+                        {authedAtendente.iniciais}
+                      </span>
+                      <div className="leading-tight">
+                        <div className="text-sm font-semibold">{authedAtendente.nome} <span className="text-[9px] text-success">● logado</span></div>
+                        <div className="text-[10px] text-muted-foreground">{authedAtendente.cargo}</div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={signOut} className="gap-2 text-destructive focus:text-destructive">
+                      <LogOut className="h-4 w-4" /> Sair da conta
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem asChild>
+                    <Link to="/login-atendente" className="gap-2">
+                      <LogIn className="h-4 w-4" /> Entrar como atendente
+                    </Link>
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
