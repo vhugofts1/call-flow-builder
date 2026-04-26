@@ -60,4 +60,5 @@ export const Home = ({ onOpen }: { onOpen: () => void }) => {
       </Button>
     </div>
   </div>
-);
+  );
+};
