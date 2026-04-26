@@ -37,7 +37,7 @@ interface ShellProps {
 }
 
 export const Shell = ({ current, onNavigate, onBack, title, subtitle, children, device = "mobile" }: ShellProps) => {
-  const { profile, setProfileId, profiles } = useProfile();
+  const { profile, setProfileId, profiles, authedAtendente, signOut } = useProfile();
   const roleColor: Record<string, string> = {
     solicitante: "text-primary border-primary/40 bg-primary/10",
     atendente: "text-accent border-accent/40 bg-accent/10",
