@@ -91,16 +91,18 @@ const Index = () => {
   };
 
   return (
-    <Shell
-      current={screen}
-      onNavigate={jump}
-      onBack={history.length > 0 ? back : undefined}
-      title={meta.t}
-      subtitle={meta.s}
-      device={meta.d}
-    >
-      {renderScreen()}
-    </Shell>
+    <ProfileProvider>
+      <Shell
+        current={screen}
+        onNavigate={jump}
+        onBack={history.length > 0 ? back : undefined}
+        title={meta.t}
+        subtitle={meta.s}
+        device={meta.d}
+      >
+        {renderScreen()}
+      </Shell>
+    </ProfileProvider>
   );
 };
 
