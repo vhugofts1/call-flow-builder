@@ -1,5 +1,6 @@
 import { Plus, Bell, Clock, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useProfile } from "@/prototype/ProfileContext";
 
 export const Home = ({ onOpen }: { onOpen: () => void }) => (
   <div className="flex h-[760px] flex-col gradient-dark">
