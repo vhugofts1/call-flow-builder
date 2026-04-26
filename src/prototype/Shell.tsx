@@ -1,7 +1,16 @@
 import { ReactNode } from "react";
 import { ScreenId } from "./types";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Zap } from "lucide-react";
+import { ChevronLeft, Zap, ChevronDown } from "lucide-react";
+import { useProfile } from "./ProfileContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const FLOW: { id: ScreenId; label: string }[] = [
   { id: "home", label: "1. Home" },
@@ -27,6 +36,12 @@ interface ShellProps {
 }
 
 export const Shell = ({ current, onNavigate, onBack, title, subtitle, children, device = "mobile" }: ShellProps) => {
+  const { profile, setProfileId, profiles } = useProfile();
+  const roleColor: Record<string, string> = {
+    solicitante: "text-primary border-primary/40 bg-primary/10",
+    atendente: "text-accent border-accent/40 bg-accent/10",
+    gestor: "text-warning border-warning/40 bg-warning/10",
+  };
   return (
     <div className="min-h-screen bg-background bg-glow">
       {/* Top bar */}
@@ -56,6 +71,55 @@ export const Shell = ({ current, onNavigate, onBack, title, subtitle, children, 
                 {s.label}
               </button>
             ))}
+          </div>
+
+          {/* Profile switcher */}
+          <div className="ml-auto">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className={cn(
+                    "flex items-center gap-2 rounded-full border px-2 py-1.5 transition-all hover:opacity-90",
+                    roleColor[profile.role]
+                  )}
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-card text-[10px] font-bold">
+                    {profile.iniciais}
+                  </span>
+                  <div className="hidden text-left leading-tight sm:block">
+                    <div className="text-[11px] font-semibold">{profile.nome}</div>
+                    <div className="text-[9px] uppercase tracking-wider opacity-80">{profile.role}</div>
+                  </div>
+                  <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                  Ver protótipo como
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {profiles.map((p) => (
+                  <DropdownMenuItem
+                    key={p.id}
+                    onClick={() => setProfileId(p.id)}
+                    className={cn("flex items-start gap-3 py-2", profile.id === p.id && "bg-secondary")}
+                  >
+                    <span
+                      className={cn(
+                        "flex h-8 w-8 items-center justify-center rounded-full border text-[11px] font-bold",
+                        roleColor[p.role]
+                      )}
+                    >
+                      {p.iniciais}
+                    </span>
+                    <div className="leading-tight">
+                      <div className="text-sm font-semibold">{p.nome}</div>
+                      <div className="text-[10px] text-muted-foreground">{p.cargo}</div>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Shell } from "@/prototype/Shell";
+import { ProfileProvider } from "@/prototype/ProfileContext";
 import { ScreenId, FlowState } from "@/prototype/types";
 import { Home } from "@/prototype/screens/Home";
 import { Tipo } from "@/prototype/screens/Tipo";
@@ -90,16 +91,18 @@ const Index = () => {
   };
 
   return (
-    <Shell
-      current={screen}
-      onNavigate={jump}
-      onBack={history.length > 0 ? back : undefined}
-      title={meta.t}
-      subtitle={meta.s}
-      device={meta.d}
-    >
-      {renderScreen()}
-    </Shell>
+    <ProfileProvider>
+      <Shell
+        current={screen}
+        onNavigate={jump}
+        onBack={history.length > 0 ? back : undefined}
+        title={meta.t}
+        subtitle={meta.s}
+        device={meta.d}
+      >
+        {renderScreen()}
+      </Shell>
+    </ProfileProvider>
   );
 };
 

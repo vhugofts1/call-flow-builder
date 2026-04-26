@@ -1,12 +1,15 @@
 import { Plus, Bell, Clock, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useProfile } from "@/prototype/ProfileContext";
 
-export const Home = ({ onOpen }: { onOpen: () => void }) => (
+export const Home = ({ onOpen }: { onOpen: () => void }) => {
+  const { profile } = useProfile();
+  return (
   <div className="flex h-[760px] flex-col gradient-dark">
     <div className="flex items-center justify-between p-5">
       <div>
-        <p className="text-xs text-muted-foreground">Olá,</p>
-        <p className="text-lg font-semibold">João Silva</p>
+        <p className="text-xs text-muted-foreground">{profile.saudacao}</p>
+        <p className="text-lg font-semibold">{profile.nome}</p>
       </div>
       <button className="relative flex h-10 w-10 items-center justify-center rounded-full bg-secondary">
         <Bell className="h-5 w-5" />
@@ -57,4 +60,5 @@ export const Home = ({ onOpen }: { onOpen: () => void }) => (
       </Button>
     </div>
   </div>
-);
+  );
+};
