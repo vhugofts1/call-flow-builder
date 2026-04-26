@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Shell } from "@/prototype/Shell";
+import { ProfileProvider } from "@/prototype/ProfileContext";
 import { ScreenId, FlowState } from "@/prototype/types";
 import { Home } from "@/prototype/screens/Home";
 import { Tipo } from "@/prototype/screens/Tipo";
