@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { ScreenId } from "./types";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Zap, ChevronDown } from "lucide-react";
+import { ChevronLeft, Zap, ChevronDown, LogIn, LogOut } from "lucide-react";
 import { useProfile } from "./ProfileContext";
 import {
   DropdownMenu,
