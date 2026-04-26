@@ -1,7 +1,16 @@
 import { ReactNode } from "react";
 import { ScreenId } from "./types";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Zap } from "lucide-react";
+import { ChevronLeft, Zap, ChevronDown } from "lucide-react";
+import { useProfile } from "./ProfileContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const FLOW: { id: ScreenId; label: string }[] = [
   { id: "home", label: "1. Home" },
