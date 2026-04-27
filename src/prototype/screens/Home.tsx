@@ -31,20 +31,56 @@ export const Home = ({ onOpen }: { onOpen: () => void }) => {
       ))}
     </div>
 
-    <div className="mt-6 flex-1 px-5">
+    <div className="mt-6 flex-1 overflow-y-auto px-5">
       <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recentes</p>
       <div className="space-y-2">
         {[
-          { p: "#2451", t: "Equipamento PDV", s: "Em andamento", c: "bg-primary/20 text-primary" },
-          { p: "#2447", t: "Reposição material", s: "Resolvido", c: "bg-success/20 text-success" },
-          { p: "#2440", t: "Erro sistema", s: "Aberto", c: "bg-warning/20 text-warning" },
+          {
+            p: "#2451",
+            t: "Equipamento PDV",
+            s: "Em andamento",
+            c: "bg-primary/20 text-primary",
+            abertura: "27/04/2026 · 09:14",
+            sla: "4h restantes",
+            slaColor: "text-success",
+          },
+          {
+            p: "#2447",
+            t: "Reposição material",
+            s: "Resolvido",
+            c: "bg-success/20 text-success",
+            abertura: "26/04/2026 · 16:42",
+            sla: "Resolvido em 3h12",
+            slaColor: "text-muted-foreground",
+          },
+          {
+            p: "#2440",
+            t: "Erro sistema",
+            s: "Aberto",
+            c: "bg-warning/20 text-warning",
+            abertura: "26/04/2026 · 08:05",
+            sla: "SLA em risco · 30min",
+            slaColor: "text-warning",
+          },
         ].map((t, i) => (
-          <div key={i} className="flex items-center justify-between rounded-xl border border-border bg-card/60 p-3">
-            <div>
-              <p className="text-xs text-muted-foreground">{t.p}</p>
-              <p className="text-sm font-medium">{t.t}</p>
+          <div key={i} className="rounded-xl border border-border bg-card/60 p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">{t.p}</p>
+                <p className="text-sm font-medium">{t.t}</p>
+              </div>
+              <span className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-medium ${t.c}`}>{t.s}</span>
             </div>
-            <span className={`rounded-full px-2 py-1 text-[10px] font-medium ${t.c}`}>{t.s}</span>
+            <div className="mt-2 flex items-center justify-between gap-2 border-t border-border/50 pt-2">
+              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                <Clock className="h-3 w-3" />
+                <span>Aberto em {t.abertura}</span>
+              </div>
+              <div className={`flex items-center gap-1 text-[10px] font-medium ${t.slaColor}`}>
+                <AlertTriangle className="h-3 w-3" />
+                <span>{t.sla}</span>
+              </div>
+            </div>
           </div>
         ))}
       </div>
