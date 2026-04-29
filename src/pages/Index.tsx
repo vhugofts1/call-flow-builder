@@ -17,7 +17,7 @@ const titles: Record<ScreenId, { t: string; s: string; d: "mobile" | "desktop" }
   home: { t: "Tela 1 · Home do solicitante", s: "Ponto de partida do fluxo — botão de ação principal", d: "mobile" },
   tipo: { t: "Tela 2 · Tipo de chamado", s: "Decisão: administrativo ou unidade", d: "mobile" },
   admin: { t: "Tela 3a · Selecionar área administrativa", s: "Caminho 'Administrativo'", d: "mobile" },
-  unidade: { t: "Tela 3b · Selecionar unidade", s: "Caminho 'Unidade' — filtro por cidade", d: "mobile" },
+  unidade: { t: "Tela 3b · Selecionar unidade", s: "Seleção em massa: empresas (cidades) + responsáveis", d: "desktop" },
   descricao: { t: "Tela 4 · Descrição do chamado", s: "Categoria, prioridade e detalhes", d: "mobile" },
   protocolo: { t: "Tela 5 · Protocolo gerado", s: "Confirmação + SLA iniciado", d: "mobile" },
   notificacao: { t: "Tela 6 · Notificação ao atendente da cidade", s: "Visão do atendente — atribuição", d: "desktop" },
@@ -67,7 +67,7 @@ const Index = () => {
       case "admin":
         return <Admin onSelect={(n) => go("descricao", { admin: n })} />;
       case "unidade":
-        return <Unidade onSelect={(n, c) => go("descricao", { unidade: n, cidade: c })} />;
+        return <Unidade onSelect={(unidades, pessoas) => go("descricao", { unidade: unidades.join(", "), cidade: pessoas.join(", ") })} />;
       case "descricao":
         return (
           <Descricao
