@@ -1,362 +1,400 @@
-import { useMemo, useState } from "react";
-import { Search, Building2, Users, ArrowRight, ArrowLeft, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Search, MapPin, ArrowRight, ArrowLeft, X, Mail, Phone, ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
-type Empresa = {
+type Responsavel = {
   id: string;
   nome: string;
-  cidade: string;
-  uf: string;
-  iniciais: string;
-  cor: string;
-};
-
-type Pessoa = {
-  id: string;
-  nome: string;
-  qualificacao: string;
   cargo: string;
-  empresaId: string;
+  email: string;
+  telefone: string;
   iniciais: string;
   cor: string;
 };
 
-const EMPRESAS: Empresa[] = [
-  { id: "5768", nome: "Araçatuba - 5768", cidade: "ARAÇATUBA", uf: "SP", iniciais: "AR", cor: "bg-orange-500" },
-  { id: "5701", nome: "Pinheiros - 5701", cidade: "SÃO PAULO", uf: "SP", iniciais: "PI", cor: "bg-blue-500" },
-  { id: "5712", nome: "Moema - 5712", cidade: "SÃO PAULO", uf: "SP", iniciais: "MO", cor: "bg-purple-500" },
-  { id: "5820", nome: "Centro - 5820", cidade: "RIO DE JANEIRO", uf: "RJ", iniciais: "CE", cor: "bg-emerald-500" },
-  { id: "5905", nome: "Savassi - 5905", cidade: "BELO HORIZONTE", uf: "MG", iniciais: "SA", cor: "bg-pink-500" },
-  { id: "6001", nome: "Batel - 6001", cidade: "CURITIBA", uf: "PR", iniciais: "BA", cor: "bg-indigo-500" },
+type Unidade = {
+  id: string;
+  nome: string;
+  responsaveis: Responsavel[];
+};
+
+type Cidade = {
+  id: string;
+  nome: string;
+  uf: string;
+  unidades: Unidade[];
+};
+
+const CIDADES: Cidade[] = [
+  {
+    id: "aracatuba",
+    nome: "Araçatuba",
+    uf: "SP",
+    unidades: [
+      {
+        id: "5768",
+        nome: "DM Araçatuba - 5768",
+        responsaveis: [
+          { id: "p1", nome: "Deikisson dos Santos Moura", cargo: "Proprietário", email: "deikisson@delmatch.com", telefone: "(18) 99876-1122", iniciais: "DE", cor: "bg-orange-500" },
+          { id: "p2", nome: "Jonathan Gabriel Rocha Paschoal", cargo: "Proprietário", email: "jonathan@delmatch.com", telefone: "(18) 99732-4451", iniciais: "JO", cor: "bg-zinc-700" },
+          { id: "p3", nome: "Meriellen Cristina Gomes de Carvalho", cargo: "Gerente", email: "meriellen@delmatch.com", telefone: "(18) 99645-9920", iniciais: "ME", cor: "bg-pink-500" },
+          { id: "p4", nome: "Michelle Heloisa Gomes de Carvalho", cargo: "Supervisora", email: "michelle@delmatch.com", telefone: "(18) 99511-3340", iniciais: "MI", cor: "bg-orange-500" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "saopaulo",
+    nome: "São Paulo",
+    uf: "SP",
+    unidades: [
+      {
+        id: "5701",
+        nome: "DM Pinheiros - 5701",
+        responsaveis: [
+          { id: "p5", nome: "Rafael Lima", cargo: "Gerente", email: "rafael@delmatch.com", telefone: "(11) 98123-4400", iniciais: "RA", cor: "bg-blue-500" },
+          { id: "p6", nome: "Ana Beatriz Souza", cargo: "Atendente", email: "ana.souza@delmatch.com", telefone: "(11) 97765-2289", iniciais: "AN", cor: "bg-pink-500" },
+        ],
+      },
+      {
+        id: "5712",
+        nome: "DM Moema - 5712",
+        responsaveis: [
+          { id: "p7", nome: "Carlos Henrique Alves", cargo: "Gerente", email: "carlos@delmatch.com", telefone: "(11) 98889-1010", iniciais: "CA", cor: "bg-purple-500" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "rj",
+    nome: "Rio de Janeiro",
+    uf: "RJ",
+    unidades: [
+      {
+        id: "5820",
+        nome: "DM Centro - 5820",
+        responsaveis: [
+          { id: "p8", nome: "Fernanda Ribeiro", cargo: "Proprietária", email: "fernanda@delmatch.com", telefone: "(21) 99211-7788", iniciais: "FE", cor: "bg-emerald-500" },
+          { id: "p9", nome: "Lucas Pereira", cargo: "Caixa", email: "lucas@delmatch.com", telefone: "(21) 98654-3322", iniciais: "LU", cor: "bg-emerald-600" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "bh",
+    nome: "Belo Horizonte",
+    uf: "MG",
+    unidades: [
+      {
+        id: "5905",
+        nome: "DM Savassi - 5905",
+        responsaveis: [
+          { id: "p10", nome: "Juliana Castro", cargo: "Supervisora", email: "juliana@delmatch.com", telefone: "(31) 99845-6677", iniciais: "JU", cor: "bg-pink-500" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ctba",
+    nome: "Curitiba",
+    uf: "PR",
+    unidades: [
+      {
+        id: "6001",
+        nome: "DM Batel - 6001",
+        responsaveis: [
+          { id: "p11", nome: "Marcos Vinícius Teixeira", cargo: "Proprietário", email: "marcos@delmatch.com", telefone: "(41) 99770-1199", iniciais: "MA", cor: "bg-indigo-500" },
+        ],
+      },
+    ],
+  },
 ];
 
-const PESSOAS: Pessoa[] = [
-  { id: "p1", nome: "Deikisson dos Santos Moura", qualificacao: "Proprietário", cargo: "Proprietário", empresaId: "5768", iniciais: "DE", cor: "bg-orange-500" },
-  { id: "p2", nome: "Jonathan Gabriel Rocha Paschoal", qualificacao: "Proprietário", cargo: "Proprietário", empresaId: "5768", iniciais: "JO", cor: "bg-zinc-700" },
-  { id: "p3", nome: "Meriellen Cristina Gomes de Carvalho", qualificacao: "Proprietário", cargo: "Proprietário", empresaId: "5768", iniciais: "ME", cor: "bg-zinc-700" },
-  { id: "p4", nome: "Michelle Heloisa Gomes de Carvalho", qualificacao: "Proprietário", cargo: "Proprietário", empresaId: "5768", iniciais: "MI", cor: "bg-orange-500" },
-  { id: "p5", nome: "Rafael Lima", qualificacao: "Gestor", cargo: "Gerente", empresaId: "5701", iniciais: "RA", cor: "bg-blue-500" },
-  { id: "p6", nome: "Ana Beatriz Souza", qualificacao: "Operacional", cargo: "Atendente", empresaId: "5701", iniciais: "AN", cor: "bg-pink-500" },
-  { id: "p7", nome: "Carlos Henrique Alves", qualificacao: "Gestor", cargo: "Gerente", empresaId: "5712", iniciais: "CA", cor: "bg-purple-500" },
-  { id: "p8", nome: "Fernanda Ribeiro", qualificacao: "Proprietário", cargo: "Proprietário", empresaId: "5820", iniciais: "FE", cor: "bg-emerald-500" },
-  { id: "p9", nome: "Lucas Pereira", qualificacao: "Operacional", cargo: "Caixa", empresaId: "5820", iniciais: "LU", cor: "bg-emerald-500" },
-  { id: "p10", nome: "Juliana Castro", qualificacao: "Gestor", cargo: "Supervisor", empresaId: "5905", iniciais: "JU", cor: "bg-pink-500" },
-  { id: "p11", nome: "Marcos Vinícius Teixeira", qualificacao: "Proprietário", cargo: "Proprietário", empresaId: "6001", iniciais: "MA", cor: "bg-indigo-500" },
-];
+const allResponsavelIds = (cidades: Cidade[]) =>
+  cidades.flatMap((c) => c.unidades.flatMap((u) => u.responsaveis.map((r) => r.id)));
 
 interface UnidadeProps {
   onSelect: (unidades: string[], pessoas: string[]) => void;
 }
 
 export const Unidade = ({ onSelect }: UnidadeProps) => {
-  const [empresasSel, setEmpresasSel] = useState<string[]>([]);
-  const [pessoasSel, setPessoasSel] = useState<string[]>([]);
-  const [buscaEmp, setBuscaEmp] = useState("");
-  const [buscaPes, setBuscaPes] = useState("");
-  const [filtroQual, setFiltroQual] = useState<string>("todas");
-  const [filtroCargo, setFiltroCargo] = useState<string>("todos");
-
-  const empresasFiltradas = useMemo(
-    () =>
-      EMPRESAS.filter(
-        (e) =>
-          e.nome.toLowerCase().includes(buscaEmp.toLowerCase()) ||
-          e.cidade.toLowerCase().includes(buscaEmp.toLowerCase())
-      ),
-    [buscaEmp]
+  // Tudo pré-selecionado por padrão — usuário só desmarca o que não quer
+  const [selecionados, setSelecionados] = useState<Set<string>>(
+    () => new Set(allResponsavelIds(CIDADES))
   );
+  const [busca, setBusca] = useState("");
+  const [expandidas, setExpandidas] = useState<Set<string>>(() => new Set(CIDADES.map((c) => c.id)));
 
-  const pessoasDisponiveis = useMemo(() => {
-    if (empresasSel.length === 0) return [];
-    return PESSOAS.filter((p) => empresasSel.includes(p.empresaId));
-  }, [empresasSel]);
+  // Mapa: responsavelId -> {cidade, unidade} para resolver nomes no envio
+  const respMap = useMemo(() => {
+    const m = new Map<string, { cidade: string; unidade: string; resp: Responsavel }>();
+    CIDADES.forEach((c) =>
+      c.unidades.forEach((u) =>
+        u.responsaveis.forEach((r) => m.set(r.id, { cidade: c.nome, unidade: u.nome, resp: r }))
+      )
+    );
+    return m;
+  }, []);
 
-  const pessoasFiltradas = useMemo(
-    () =>
-      pessoasDisponiveis.filter((p) => {
-        const matchBusca =
-          p.nome.toLowerCase().includes(buscaPes.toLowerCase()) ||
-          p.cargo.toLowerCase().includes(buscaPes.toLowerCase());
-        const matchQual = filtroQual === "todas" || p.qualificacao === filtroQual;
-        const matchCargo = filtroCargo === "todos" || p.cargo === filtroCargo;
-        return matchBusca && matchQual && matchCargo;
-      }),
-    [pessoasDisponiveis, buscaPes, filtroQual, filtroCargo]
-  );
+  const cidadesFiltradas = useMemo(() => {
+    if (!busca.trim()) return CIDADES;
+    const q = busca.toLowerCase();
+    return CIDADES.map((c) => {
+      const cidadeMatch = c.nome.toLowerCase().includes(q);
+      const unidadesFiltradas = c.unidades
+        .map((u) => {
+          const unidadeMatch = u.nome.toLowerCase().includes(q);
+          const respFiltrados = u.responsaveis.filter(
+            (r) => r.nome.toLowerCase().includes(q) || r.cargo.toLowerCase().includes(q)
+          );
+          if (cidadeMatch || unidadeMatch) return u;
+          if (respFiltrados.length > 0) return { ...u, responsaveis: respFiltrados };
+          return null;
+        })
+        .filter((u): u is Unidade => u !== null);
+      if (cidadeMatch) return c;
+      if (unidadesFiltradas.length > 0) return { ...c, unidades: unidadesFiltradas };
+      return null;
+    }).filter((c): c is Cidade => c !== null);
+  }, [busca]);
 
-  const qualificacoes = useMemo(
-    () => Array.from(new Set(PESSOAS.map((p) => p.qualificacao))),
-    []
-  );
-  const cargos = useMemo(() => Array.from(new Set(PESSOAS.map((p) => p.cargo))), []);
+  // Auto-expandir resultados quando há busca
+  useEffect(() => {
+    if (busca.trim()) {
+      setExpandidas(new Set(cidadesFiltradas.map((c) => c.id)));
+    }
+  }, [busca, cidadesFiltradas]);
 
-  const toggleEmpresa = (id: string) =>
-    setEmpresasSel((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
-  const togglePessoa = (id: string) =>
-    setPessoasSel((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+  const toggleResp = (id: string) =>
+    setSelecionados((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
-  const todasEmpresas = () => setEmpresasSel(empresasFiltradas.map((e) => e.id));
-  const limparEmpresas = () => {
-    setEmpresasSel([]);
-    setPessoasSel([]);
+  const toggleCidade = (cidade: Cidade) => {
+    const ids = cidade.unidades.flatMap((u) => u.responsaveis.map((r) => r.id));
+    const todos = ids.every((id) => selecionados.has(id));
+    setSelecionados((prev) => {
+      const next = new Set(prev);
+      if (todos) ids.forEach((id) => next.delete(id));
+      else ids.forEach((id) => next.add(id));
+      return next;
+    });
   };
-  const todasPessoas = () => setPessoasSel(pessoasFiltradas.map((p) => p.id));
-  const limparPessoas = () => setPessoasSel([]);
 
-  const empresaNomes = empresasSel
-    .map((id) => EMPRESAS.find((e) => e.id === id)?.nome ?? "")
-    .filter(Boolean);
-  const pessoaNomes = pessoasSel
-    .map((id) => PESSOAS.find((p) => p.id === id)?.nome ?? "")
-    .filter(Boolean);
+  const toggleUnidade = (u: Unidade) => {
+    const ids = u.responsaveis.map((r) => r.id);
+    const todos = ids.every((id) => selecionados.has(id));
+    setSelecionados((prev) => {
+      const next = new Set(prev);
+      if (todos) ids.forEach((id) => next.delete(id));
+      else ids.forEach((id) => next.add(id));
+      return next;
+    });
+  };
+
+  const toggleExpand = (id: string) =>
+    setExpandidas((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const selecionarTudo = () => setSelecionados(new Set(allResponsavelIds(CIDADES)));
+  const limparTudo = () => setSelecionados(new Set());
+
+  const totalResp = allResponsavelIds(CIDADES).length;
+  const cidadesSel = new Set<string>();
+  const unidadesSel = new Set<string>();
+  selecionados.forEach((id) => {
+    const info = respMap.get(id);
+    if (info) {
+      cidadesSel.add(info.cidade);
+      unidadesSel.add(info.unidade);
+    }
+  });
+
+  const handleNext = () => {
+    onSelect(Array.from(unidadesSel), Array.from(cidadesSel));
+  };
 
   return (
     <div className="space-y-4">
+      {/* Header explicativo */}
       <div className="rounded-2xl border border-accent/30 bg-accent/5 px-4 py-3">
         <p className="text-[11px] uppercase tracking-widest text-accent">Etapa 2 de 4 · Chamado em massa</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          Selecione uma ou mais <strong className="text-foreground">unidades/empresas</strong> e em seguida os{" "}
-          <strong className="text-foreground">responsáveis</strong> que receberão o chamado.
+          Todos os responsáveis estão{" "}
+          <strong className="text-foreground">pré-selecionados</strong>. Use os checkboxes para ajustar
+          quem deve receber este chamado.
         </p>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        {/* PAINEL ESQUERDO — EMPRESAS */}
-        <Panel
-          title="Selecionar Empresas/Unidades"
-          icon={<Building2 className="h-4 w-4" />}
-          counter={`${empresasSel.length} selecionada${empresasSel.length === 1 ? "" : "s"}`}
-        >
-          <div className="flex flex-wrap items-center gap-2 border-b border-border bg-secondary/40 px-3 py-2">
-            <Button
-              size="sm"
-              variant={empresasSel.length === empresasFiltradas.length && empresasFiltradas.length > 0 ? "default" : "secondary"}
-              onClick={todasEmpresas}
-              className="h-8 gap-1 text-xs"
-            >
-              <Checkbox checked={empresasSel.length === empresasFiltradas.length && empresasFiltradas.length > 0} className="pointer-events-none" />
-              Todas as Empresas
-            </Button>
-            <Button size="sm" variant="ghost" onClick={limparEmpresas} className="h-8 gap-1 text-xs">
-              <X className="h-3.5 w-3.5" /> Desmarcar Todas
-            </Button>
-            <div className="ml-auto flex min-w-[180px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-2 py-1.5">
-              <Search className="h-3.5 w-3.5 text-muted-foreground" />
-              <input
-                value={buscaEmp}
-                onChange={(e) => setBuscaEmp(e.target.value)}
-                placeholder="Pesquisar..."
-                className="flex-1 bg-transparent text-xs outline-none placeholder:text-muted-foreground"
-              />
-            </div>
-          </div>
-
-          <div className="max-h-[460px] overflow-auto">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-card text-[11px] uppercase tracking-wider text-muted-foreground">
-                <tr className="border-b border-border">
-                  <th className="w-10 py-2"></th>
-                  <th className="py-2 text-left font-medium">Empresa</th>
-                  <th className="py-2 pr-3 text-left font-medium">Cidade</th>
-                </tr>
-              </thead>
-              <tbody>
-                {empresasFiltradas.map((e) => {
-                  const sel = empresasSel.includes(e.id);
-                  return (
-                    <tr
-                      key={e.id}
-                      onClick={() => toggleEmpresa(e.id)}
-                      className={cn(
-                        "cursor-pointer border-b border-border/50 transition-colors hover:bg-secondary/60",
-                        sel && "bg-accent/10"
-                      )}
-                    >
-                      <td className="py-2 pl-3">
-                        <Checkbox checked={sel} onCheckedChange={() => toggleEmpresa(e.id)} />
-                      </td>
-                      <td className="py-2">
-                        <div className="flex items-center gap-2">
-                          <span className={cn("flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold text-white", e.cor)}>
-                            {e.iniciais}
-                          </span>
-                          <span className="font-medium">{e.nome}</span>
-                        </div>
-                      </td>
-                      <td className="py-2 pr-3 text-xs text-muted-foreground">
-                        {e.cidade} - {e.uf}
-                      </td>
-                    </tr>
-                  );
-                })}
-                {empresasFiltradas.length === 0 && (
-                  <tr>
-                    <td colSpan={3} className="py-8 text-center text-xs text-muted-foreground">
-                      Nenhuma empresa encontrada.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </Panel>
-
-        {/* PAINEL DIREITO — PESSOAS */}
-        <Panel
-          title="Selecionar Responsáveis"
-          icon={<Users className="h-4 w-4" />}
-          counter={`${pessoasSel.length} pessoa${pessoasSel.length === 1 ? "" : "s"}`}
-        >
-          <div className="flex flex-wrap items-center gap-2 border-b border-border bg-secondary/40 px-3 py-2">
-            <Button
-              size="sm"
-              variant={pessoasSel.length === pessoasFiltradas.length && pessoasFiltradas.length > 0 ? "default" : "secondary"}
-              onClick={todasPessoas}
-              disabled={pessoasFiltradas.length === 0}
-              className="h-8 gap-1 text-xs"
-            >
-              <Checkbox checked={pessoasSel.length === pessoasFiltradas.length && pessoasFiltradas.length > 0} className="pointer-events-none" />
-              Todas as Pessoas
-            </Button>
-            <Button size="sm" variant="ghost" onClick={limparPessoas} className="h-8 gap-1 text-xs">
-              <X className="h-3.5 w-3.5" /> Desmarcar Todas
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 gap-2 border-b border-border bg-card/60 px-3 py-2 sm:grid-cols-3">
-            <Select value={filtroQual} onValueChange={setFiltroQual}>
-              <SelectTrigger className="h-8 text-xs">
-                <SelectValue placeholder="Qualificação" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todas">Todas as Qualificações</SelectItem>
-                {qualificacoes.map((q) => (
-                  <SelectItem key={q} value={q}>
-                    {q}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={filtroCargo} onValueChange={setFiltroCargo}>
-              <SelectTrigger className="h-8 text-xs">
-                <SelectValue placeholder="Cargo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos os Cargos</SelectItem>
-                {cargos.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <div className="flex items-center gap-2 rounded-md border border-border bg-card px-2 py-1">
-              <Search className="h-3.5 w-3.5 text-muted-foreground" />
-              <input
-                value={buscaPes}
-                onChange={(e) => setBuscaPes(e.target.value)}
-                placeholder="Pesquisar..."
-                className="flex-1 bg-transparent text-xs outline-none placeholder:text-muted-foreground"
-              />
-            </div>
-          </div>
-
-          <div className="max-h-[400px] overflow-auto">
-            {empresasSel.length === 0 ? (
-              <div className="flex h-[200px] flex-col items-center justify-center gap-2 text-center text-xs text-muted-foreground">
-                <Building2 className="h-8 w-8 opacity-40" />
-                <p>Selecione uma empresa para listar os responsáveis</p>
-              </div>
-            ) : (
-              <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-card text-[11px] uppercase tracking-wider text-muted-foreground">
-                  <tr className="border-b border-border">
-                    <th className="w-10 py-2"></th>
-                    <th className="py-2 text-left font-medium">Pessoa</th>
-                    <th className="py-2 text-left font-medium">Qualificação</th>
-                    <th className="py-2 text-left font-medium">Cargo</th>
-                    <th className="py-2 pr-3 text-left font-medium">Unidade</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pessoasFiltradas.map((p) => {
-                    const sel = pessoasSel.includes(p.id);
-                    const empresa = EMPRESAS.find((e) => e.id === p.empresaId);
-                    return (
-                      <tr
-                        key={p.id}
-                        onClick={() => togglePessoa(p.id)}
-                        className={cn(
-                          "cursor-pointer border-b border-border/50 transition-colors hover:bg-secondary/60",
-                          sel && "bg-accent/10"
-                        )}
-                      >
-                        <td className="py-2 pl-3">
-                          <Checkbox checked={sel} onCheckedChange={() => togglePessoa(p.id)} />
-                        </td>
-                        <td className="py-2">
-                          <div className="flex items-center gap-2">
-                            <span className={cn("flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold text-white", p.cor)}>
-                              {p.iniciais}
-                            </span>
-                            <span className="font-medium">{p.nome}</span>
-                          </div>
-                        </td>
-                        <td className="py-2 text-xs text-muted-foreground">{p.qualificacao}</td>
-                        <td className="py-2 text-xs text-muted-foreground">{p.cargo}</td>
-                        <td className="py-2 pr-3 text-xs text-muted-foreground">{empresa?.nome}</td>
-                      </tr>
-                    );
-                  })}
-                  {pessoasFiltradas.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="py-8 text-center text-xs text-muted-foreground">
-                        Nenhum responsável encontrado.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between border-t border-border bg-secondary/40 px-3 py-2 text-xs">
-            <span className="text-muted-foreground">
-              Encontrado {pessoasFiltradas.length} pessoa{pessoasFiltradas.length === 1 ? "" : "s"}.
-            </span>
-            <span className="font-medium">
-              {pessoasSel.length} Pessoa{pessoasSel.length === 1 ? "" : "s"} Selecionada{pessoasSel.length === 1 ? "" : "s"}
-            </span>
-          </div>
-        </Panel>
+      {/* Barra de ações */}
+      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-card px-3 py-2">
+        <div className="flex flex-1 items-center gap-2 rounded-md border border-border bg-secondary/60 px-2 py-1.5 min-w-[220px]">
+          <Search className="h-3.5 w-3.5 text-muted-foreground" />
+          <input
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Buscar cidade, unidade ou responsável..."
+            className="flex-1 bg-transparent text-xs outline-none placeholder:text-muted-foreground"
+          />
+        </div>
+        <Button size="sm" variant="secondary" onClick={selecionarTudo} className="h-8 text-xs">
+          Selecionar todos
+        </Button>
+        <Button size="sm" variant="ghost" onClick={limparTudo} className="h-8 gap-1 text-xs">
+          <X className="h-3.5 w-3.5" /> Limpar
+        </Button>
       </div>
 
-      {/* RODAPÉ AÇÕES */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-3">
+      {/* Accordion por cidade */}
+      <div className="space-y-2">
+        {cidadesFiltradas.map((cidade) => {
+          const cidadeIds = cidade.unidades.flatMap((u) => u.responsaveis.map((r) => r.id));
+          const cidadeSelCount = cidadeIds.filter((id) => selecionados.has(id)).length;
+          const cidadeAllSel = cidadeSelCount === cidadeIds.length && cidadeIds.length > 0;
+          const cidadeAlgunsSel = cidadeSelCount > 0 && !cidadeAllSel;
+          const aberta = expandidas.has(cidade.id);
+
+          return (
+            <div
+              key={cidade.id}
+              className={cn(
+                "overflow-hidden rounded-2xl border transition-colors",
+                cidadeAllSel ? "border-accent/60 bg-accent/5" : cidadeAlgunsSel ? "border-accent/30" : "border-border bg-card"
+              )}
+            >
+              {/* Header cidade */}
+              <div className="flex items-center gap-3 px-4 py-3">
+                <Checkbox
+                  checked={cidadeAllSel ? true : cidadeAlgunsSel ? "indeterminate" : false}
+                  onCheckedChange={() => toggleCidade(cidade)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <button
+                  onClick={() => toggleExpand(cidade.id)}
+                  className="flex flex-1 items-center justify-between gap-3 text-left"
+                >
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-accent" />
+                    <span className="text-sm font-semibold">{cidade.nome}</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      {cidade.uf}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                      {cidadeSelCount}/{cidadeIds.length} responsáveis
+                    </span>
+                    <ChevronDown
+                      className={cn(
+                        "h-4 w-4 text-muted-foreground transition-transform",
+                        aberta && "rotate-180"
+                      )}
+                    />
+                  </div>
+                </button>
+              </div>
+
+              {/* Conteúdo expandido */}
+              {aberta && (
+                <div className="border-t border-border bg-background/40 px-4 py-3 space-y-3">
+                  {cidade.unidades.map((u) => {
+                    const ids = u.responsaveis.map((r) => r.id);
+                    const selCount = ids.filter((id) => selecionados.has(id)).length;
+                    const allSel = selCount === ids.length;
+                    const algunsSel = selCount > 0 && !allSel;
+
+                    return (
+                      <div key={u.id} className="rounded-xl border border-border/60 bg-card/60">
+                        <div className="flex items-center gap-2 border-b border-border/40 px-3 py-2">
+                          <Checkbox
+                            checked={allSel ? true : algunsSel ? "indeterminate" : false}
+                            onCheckedChange={() => toggleUnidade(u)}
+                          />
+                          <span className="text-xs font-semibold">{u.nome}</span>
+                          <span className="ml-auto text-[10px] text-muted-foreground">
+                            {selCount}/{ids.length}
+                          </span>
+                        </div>
+                        <ul className="divide-y divide-border/40">
+                          {u.responsaveis.map((r) => {
+                            const sel = selecionados.has(r.id);
+                            return (
+                              <li
+                                key={r.id}
+                                onClick={() => toggleResp(r.id)}
+                                className={cn(
+                                  "flex cursor-pointer items-center gap-3 px-3 py-2 transition-colors hover:bg-secondary/40",
+                                  sel && "bg-accent/5"
+                                )}
+                              >
+                                <Checkbox
+                                  checked={sel}
+                                  onCheckedChange={() => toggleResp(r.id)}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                                <span
+                                  className={cn(
+                                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white",
+                                    r.cor
+                                  )}
+                                >
+                                  {r.iniciais}
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-medium">{r.nome}</p>
+                                  <p className="text-[10px] text-muted-foreground">{r.cargo}</p>
+                                </div>
+                                <div className="hidden flex-col items-end gap-0.5 text-[10px] text-muted-foreground sm:flex">
+                                  <span className="flex items-center gap-1">
+                                    <Mail className="h-3 w-3" /> {r.email}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Phone className="h-3 w-3" /> {r.telefone}
+                                  </span>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {cidadesFiltradas.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-border bg-card/40 py-10 text-center text-xs text-muted-foreground">
+            Nenhum resultado para "{busca}".
+          </div>
+        )}
+      </div>
+
+      {/* Rodapé */}
+      <div className="sticky bottom-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card/95 px-4 py-3 backdrop-blur-xl">
         <Button variant="ghost" size="sm" className="gap-2">
           <ArrowLeft className="h-4 w-4" /> Anterior
         </Button>
         <div className="text-xs text-muted-foreground">
-          {empresasSel.length > 0 && (
-            <span>
-              <strong className="text-foreground">{empresasSel.length}</strong> unidade(s) ·{" "}
-              <strong className="text-foreground">{pessoasSel.length}</strong> responsável(eis)
-            </span>
-          )}
+          <strong className="text-foreground">{cidadesSel.size}</strong> cidade(s) ·{" "}
+          <strong className="text-foreground">{unidadesSel.size}</strong> unidade(s) ·{" "}
+          <strong className="text-foreground">{selecionados.size}</strong>/{totalResp} responsáveis
         </div>
         <Button
           size="sm"
-          disabled={empresasSel.length === 0 || pessoasSel.length === 0}
-          onClick={() => onSelect(empresaNomes, pessoaNomes)}
+          disabled={selecionados.size === 0}
+          onClick={handleNext}
           className="gap-2 gradient-primary text-primary-foreground glow-orange"
         >
           Próximo <ArrowRight className="h-4 w-4" />
@@ -365,28 +403,3 @@ export const Unidade = ({ onSelect }: UnidadeProps) => {
     </div>
   );
 };
-
-const Panel = ({
-  title,
-  icon,
-  counter,
-  children,
-}: {
-  title: string;
-  icon: React.ReactNode;
-  counter: string;
-  children: React.ReactNode;
-}) => (
-  <div className="overflow-hidden rounded-2xl border border-border bg-card">
-    <div className="flex items-center justify-between border-b border-border bg-secondary/60 px-4 py-2.5">
-      <div className="flex items-center gap-2 text-sm font-semibold">
-        {icon}
-        {title}
-      </div>
-      <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-medium text-accent">
-        {counter}
-      </span>
-    </div>
-    {children}
-  </div>
-);
