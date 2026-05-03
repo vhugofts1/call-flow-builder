@@ -80,9 +80,9 @@ const Index = () => {
       case "protocolo":
         return <Protocolo protocolo={protocolo} onTrack={() => go("notificacao")} onHome={reset} />;
       case "notificacao":
-        return <Notificacao protocolo={protocolo} cidade={state.cidade || "São Paulo"} onAceitar={() => go("historico")} />;
+        return <Notificacao protocolo={protocolo} cidade={state.cidade || "São Paulo"} categoria={state.categoria} responsaveis={state.responsaveis} onAceitar={() => go("historico")} />;
       case "historico":
-        return <Historico onSelect={() => go("resolucao")} onGlobal={() => go("global")} />;
+        return <Historico chamadoNovo={state} onSelect={() => go("resolucao")} onGlobal={() => go("global")} />;
       case "global":
         return <Global onCidade={() => go("historico")} />;
       case "resolucao":
