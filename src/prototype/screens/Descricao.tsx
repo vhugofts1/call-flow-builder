@@ -2,7 +2,19 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Paperclip } from "lucide-react";
 
-const CATEGORIAS = ["Equipamento", "Sistema/TI", "Estoque", "Financeiro", "Pessoas", "Outro"];
+const CATEGORIAS = ["Retorno por Devolução", "Taxa de Deslocamento", "Reembolso Loja", "Outros"];
+
+const TEMPLATES: Record<string, string> = {
+  "Retorno por Devolução": `Olá, tudo bem?
+Entregador informa que foi até o local da entrega, porém cliente não encontrado. Em tratativas com a loja a mesma solicitou retorno. O Entregador retornou com a devolução à loja.
+
+Entregador: Douglas José Siqueira
+OS: 698945774`,
+  "Taxa de Deslocamento": "",
+  "Reembolso Loja": "",
+  "Outros": "",
+};
+
 const PRIORIDADES = [
   { n: "Baixa", c: "border-border text-muted-foreground", a: "bg-muted text-foreground" },
   { n: "Média", c: "border-warning/40 text-warning", a: "bg-warning text-background" },
@@ -10,9 +22,22 @@ const PRIORIDADES = [
 ];
 
 export const Descricao = ({ onSubmit, destino }: { onSubmit: (cat: string, prio: string, desc: string) => void; destino?: string }) => {
-  const [cat, setCat] = useState("Equipamento");
+  const [cat, setCat] = useState("Retorno por Devolução");
   const [prio, setPrio] = useState("Média");
-  const [desc, setDesc] = useState("");
+  const [desc, setDesc] = useState(TEMPLATES["Retorno por Devolução"]);
+
+  const selectCategoria = (nova: string) => {
+    setCat(nova);
+    const novoTemplate = TEMPLATES[nova] ?? "";
+    // Se a descrição atual está vazia ou é igual a um template conhecido, substitui sem confirmar
+    const isTemplate = Object.values(TEMPLATES).includes(desc);
+    if (!desc.trim() || isTemplate) {
+      setDesc(novoTemplate);
+    } else if (novoTemplate) {
+      const ok = window.confirm("Substituir a descrição atual pelo modelo desta categoria?");
+      if (ok) setDesc(novoTemplate);
+    }
+  };
 
   return (
     <div className="flex h-[760px] flex-col gradient-dark p-5">
