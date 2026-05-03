@@ -10,6 +10,16 @@ export type ScreenId =
   | "global"
   | "resolucao";
 
+export type ResponsavelInfo = {
+  id: string;
+  nome: string;
+  cargo: string;
+  iniciais: string;
+  cor: string;
+  cidade: string;
+  unidade: string;
+};
+
 export type FlowState = {
   tipo?: "admin" | "unidade";
   admin?: string;
@@ -19,4 +29,6 @@ export type FlowState = {
   prioridade?: string;
   descricao?: string;
   protocolo?: string;
+  responsaveis?: ResponsavelInfo[];
+  sla?: string;
 };

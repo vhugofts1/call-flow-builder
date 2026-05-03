@@ -116,7 +116,7 @@ const allResponsavelIds = (cidades: Cidade[]) =>
   cidades.flatMap((c) => c.unidades.flatMap((u) => u.responsaveis.map((r) => r.id)));
 
 interface UnidadeProps {
-  onSelect: (unidades: string[], pessoas: string[]) => void;
+  onSelect: (unidades: string[], pessoas: string[], responsaveis: import("../types").ResponsavelInfo[]) => void;
 }
 
 export const Unidade = ({ onSelect }: UnidadeProps) => {
@@ -220,7 +220,22 @@ export const Unidade = ({ onSelect }: UnidadeProps) => {
   });
 
   const handleNext = () => {
-    onSelect(Array.from(unidadesSel), Array.from(cidadesSel));
+    const respList = Array.from(selecionados)
+      .map((id) => {
+        const info = respMap.get(id);
+        if (!info) return null;
+        return {
+          id: info.resp.id,
+          nome: info.resp.nome,
+          cargo: info.resp.cargo,
+          iniciais: info.resp.iniciais,
+          cor: info.resp.cor,
+          cidade: info.cidade,
+          unidade: info.unidade,
+        };
+      })
+      .filter((r): r is NonNullable<typeof r> => r !== null);
+    onSelect(Array.from(unidadesSel), Array.from(cidadesSel), respList);
   };
 
   return (
