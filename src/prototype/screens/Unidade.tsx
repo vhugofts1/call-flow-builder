@@ -116,7 +116,7 @@ const allResponsavelIds = (cidades: Cidade[]) =>
   cidades.flatMap((c) => c.unidades.flatMap((u) => u.responsaveis.map((r) => r.id)));
 
 interface UnidadeProps {
-  onSelect: (unidades: string[], pessoas: string[]) => void;
+  onSelect: (unidades: string[], pessoas: string[], responsaveis: import("../types").ResponsavelInfo[]) => void;
 }
 
 export const Unidade = ({ onSelect }: UnidadeProps) => {
