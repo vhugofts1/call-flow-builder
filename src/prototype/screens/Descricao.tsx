@@ -54,7 +54,7 @@ export const Descricao = ({ onSubmit, destino }: { onSubmit: (cat: string, prio:
             {CATEGORIAS.map((c) => (
               <button
                 key={c}
-                onClick={() => setCat(c)}
+                onClick={() => selectCategoria(c)}
                 className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
                   cat === c ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-muted-foreground"
                 }`}
