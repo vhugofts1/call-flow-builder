@@ -66,21 +66,6 @@ export const Descricao = ({ onSubmit, destino }: { onSubmit: (cat: string, prio:
         </div>
 
         <div>
-          <p className="mb-2 text-xs font-semibold text-muted-foreground">PRIORIDADE</p>
-          <div className="grid grid-cols-3 gap-2">
-            {PRIORIDADES.map((p) => (
-              <button
-                key={p.n}
-                onClick={() => setPrio(p.n)}
-                className={`rounded-xl border-2 py-2 text-xs font-bold transition-all ${prio === p.n ? p.a : p.c}`}
-              >
-                {p.n}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
           <p className="mb-2 text-xs font-semibold text-muted-foreground">DESCRIÇÃO</p>
           <textarea
             value={desc}
