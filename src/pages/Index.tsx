@@ -67,7 +67,7 @@ const Index = () => {
       case "admin":
         return <Admin onSelect={(n) => go("descricao", { admin: n })} />;
       case "unidade":
-        return <Unidade onSelect={(unidades, pessoas) => go("descricao", { unidade: unidades.join(", "), cidade: pessoas.join(", ") })} />;
+        return <Unidade onSelect={(unidades, pessoas, responsaveis) => go("descricao", { unidade: unidades.join(", "), cidade: pessoas.join(", "), responsaveis })} />;
       case "descricao":
         return (
           <Descricao
