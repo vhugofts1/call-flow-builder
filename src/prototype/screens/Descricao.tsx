@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Paperclip } from "lucide-react";
+import { Paperclip, Plus, Image } from "lucide-react";
 
 const CATEGORIAS = ["Retorno por Devolução", "Taxa de Deslocamento", "Reembolso Loja", "Outros"];
 
@@ -29,7 +29,6 @@ export const Descricao = ({ onSubmit, destino }: { onSubmit: (cat: string, prio:
   const selectCategoria = (nova: string) => {
     setCat(nova);
     const novoTemplate = TEMPLATES[nova] ?? "";
-    // Se a descrição atual está vazia ou é igual a um template conhecido, substitui sem confirmar
     const isTemplate = Object.values(TEMPLATES).includes(desc);
     if (!desc.trim() || isTemplate) {
       setDesc(novoTemplate);

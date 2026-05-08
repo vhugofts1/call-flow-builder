@@ -14,16 +14,16 @@ import { Global } from "@/prototype/screens/Global";
 import { Resolucao } from "@/prototype/screens/Resolucao";
 
 const titles: Record<ScreenId, { t: string; s: string; d: "mobile" | "desktop" }> = {
-  home: { t: "Tela 1 · Home do solicitante", s: "Ponto de partida do fluxo — botão de ação principal", d: "mobile" },
-  tipo: { t: "Tela 2 · Tipo de chamado", s: "Decisão: administrativo ou unidade", d: "mobile" },
-  admin: { t: "Tela 3a · Selecionar área administrativa", s: "Caminho 'Administrativo'", d: "mobile" },
+  home: { t: "Tela 1 · Home do solicitante", s: "Ponto de partida do fluxo — botão de ação principal", d: "desktop" },
+  tipo: { t: "Tela 2 · Tipo de chamado", s: "Decisão: administrativo ou unidade", d: "desktop" },
+  admin: { t: "Tela 3a · Selecionar área administrativa", s: "Caminho 'Administrativo'", d: "desktop" },
   unidade: { t: "Tela 3b · Selecionar unidade", s: "Seleção em massa: empresas (cidades) + responsáveis", d: "desktop" },
-  descricao: { t: "Tela 4 · Descrição do chamado", s: "Categoria, prioridade e detalhes", d: "mobile" },
-  protocolo: { t: "Tela 5 · Protocolo gerado", s: "Confirmação + SLA iniciado", d: "mobile" },
+  descricao: { t: "Tela 4 · Descrição do chamado", s: "Categoria, prioridade e detalhes", d: "desktop" },
+  protocolo: { t: "Tela 5 · Protocolo gerado", s: "Confirmação + SLA iniciado", d: "desktop" },
   notificacao: { t: "Tela 6 · Notificação ao atendente da cidade", s: "Visão do atendente — atribuição", d: "desktop" },
   historico: { t: "Tela 7 · Histórico por cidade", s: "Gestão de chamados ativos da cidade", d: "desktop" },
-  global: { t: "Tela 8 · Visão global do suporte", s: "Dashboard executivo multi-cidade", d: "desktop" },
-  resolucao: { t: "Tela 9 · Tratativas e resolução", s: "Linha do tempo + avaliação final", d: "desktop" },
+  resolucao: { t: "Tela 8 · Visualizar chamado", s: "Acompanhamento em tempo real + histórico de tratativas", d: "desktop" },
+  global: { t: "Tela 9 · Visão global do suporte", s: "Dashboard executivo multi-cidade", d: "desktop" },
 };
 
 const Index = () => {
@@ -83,10 +83,10 @@ const Index = () => {
         return <Notificacao protocolo={protocolo} cidade={state.cidade || "São Paulo"} categoria={state.categoria} responsaveis={state.responsaveis} onAceitar={() => go("historico")} />;
       case "historico":
         return <Historico chamadoNovo={state} onSelect={() => go("resolucao")} onGlobal={() => go("global")} />;
+      case "resolucao":
+        return <Resolucao state={state} onFinalizar={reset} />;
       case "global":
         return <Global onCidade={() => go("historico")} />;
-      case "resolucao":
-        return <Resolucao protocolo={protocolo} onFinalizar={reset} />;
     }
   };
 
