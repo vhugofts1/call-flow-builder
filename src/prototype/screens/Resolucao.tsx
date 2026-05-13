@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MessageSquare, Star, Paperclip, Clock, ShieldCheck, Send, CheckCircle2 } from "lucide-react";
+import { MessageSquare, Star, Paperclip, Clock, ShieldCheck, Send, CheckCircle2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FlowState } from "../types";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,8 @@ export const Resolucao = ({ state, onFinalizar }: ResolucaoProps) => {
   const { profile } = useProfile();
   const [simulatedResolved, setSimulatedResolved] = useState(false);
   const [seconds, setSeconds] = useState(9912); 
-  
+  const [chatMsg, setChatMsg] = useState("");
+  const [anexos, setAnexos] = useState<File[]>([]);  
   const s = state || {};
   const isResolvido = simulatedResolved || s.protocolo?.includes("RESOLVIDO") || false;
   const protocolo = s.protocolo || "DM-2451";
@@ -168,11 +169,56 @@ export const Resolucao = ({ state, onFinalizar }: ResolucaoProps) => {
             ))}
           </div>
 
-          <div className="border-t border-border p-4 bg-muted/5">
+          <div className="border-t border-border p-4 bg-muted/5 space-y-3">
+            <input 
+              type="file" 
+              id="chat-file-upload" 
+              multiple 
+              className="hidden" 
+              onChange={(e) => {
+                if (e.target.files) {
+                  setAnexos(prev => [...prev, ...Array.from(e.target.files!)]);
+                }
+              }}
+            />
+            
+            {anexos.length > 0 && (
+              <div className="flex flex-wrap gap-2 animate-in slide-in-from-bottom-2">
+                {anexos.map((f, i) => (
+                  <div key={i} className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-lg pl-1.5 pr-2 py-1">
+                    <Paperclip className="h-3 w-3 text-primary" />
+                    <span className="text-[10px] font-bold truncate max-w-[100px]">{f.name}</span>
+                    <button onClick={() => setAnexos(prev => prev.filter((_, idx) => idx !== i))} className="text-primary hover:text-destructive">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-3 shadow-inner">
-              <input placeholder="Digite aqui sua mensagem..." className="flex-1 bg-transparent text-sm outline-none" />
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary"><Paperclip className="h-4 w-4" /></Button>
-              <Button size="sm" className="h-8 gradient-primary text-white gap-2 px-4 shadow-lg shadow-primary/20">
+              <input 
+                placeholder="Digite aqui sua mensagem..." 
+                className="flex-1 bg-transparent text-sm outline-none" 
+                value={chatMsg}
+                onChange={(e) => setChatMsg(e.target.value)}
+              />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-muted-foreground hover:text-primary"
+                onClick={() => document.getElementById("chat-file-upload")?.click()}
+              >
+                <Paperclip className="h-4 w-4" />
+              </Button>
+              <Button 
+                size="sm" 
+                className="h-8 gradient-primary text-white gap-2 px-4 shadow-lg shadow-primary/20"
+                onClick={() => {
+                  setChatMsg("");
+                  setAnexos([]);
+                }}
+              >
                 <Send className="h-3.5 w-3.5" /> <span className="text-xs font-bold uppercase">Enviar</span>
               </Button>
             </div>

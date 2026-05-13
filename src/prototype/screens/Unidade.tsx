@@ -46,66 +46,263 @@ const CIDADES: Cidade[] = [
     ],
   },
   {
-    id: "saopaulo",
-    nome: "São Paulo",
+    id: "araraquara",
+    nome: "Araraquara",
     uf: "SP",
     unidades: [
       {
-        id: "5701",
-        nome: "DM Pinheiros - 5701",
+        id: "2742",
+        nome: "Araraquara - 2742",
         responsaveis: [
-          { id: "p5", nome: "Rafael Lima", cargo: "Gerente", email: "rafael@delmatch.com", telefone: "(11) 98123-4400", iniciais: "RA", cor: "bg-blue-500" },
-          { id: "p6", nome: "Ana Beatriz Souza", cargo: "Atendente", email: "ana.souza@delmatch.com", telefone: "(11) 97765-2289", iniciais: "AN", cor: "bg-pink-500" },
-        ],
-      },
-      {
-        id: "5712",
-        nome: "DM Moema - 5712",
-        responsaveis: [
-          { id: "p7", nome: "Carlos Henrique Alves", cargo: "Gerente", email: "carlos@delmatch.com", telefone: "(11) 98889-1010", iniciais: "CA", cor: "bg-purple-500" },
+          { id: "ara1", nome: "Ana Maria Berardo Magalhães", cargo: "Consultor de Vendas", email: "ana.maria@delmatch.com", telefone: "(16) 99123-0001", iniciais: "AN", cor: "bg-orange-500" },
+          { id: "ara2", nome: "Antonio Carlos de Almeida Junior", cargo: "Consultor de Vendas", email: "antonio.carlos@delmatch.com", telefone: "(16) 99123-0002", iniciais: "AC", cor: "bg-zinc-800" },
+          { id: "ara3", nome: "Empresa Full", cargo: "Estabelecimento comercial", email: "full@delmatch.com", telefone: "(16) 99123-0003", iniciais: "EM", cor: "bg-orange-600" },
+          { id: "ara4", nome: "José Carlos Castanheira", cargo: "Proprietário", email: "jose.carlos@delmatch.com", telefone: "(16) 99123-0004", iniciais: "JC", cor: "bg-zinc-700" },
         ],
       },
     ],
   },
   {
-    id: "rj",
-    nome: "Rio de Janeiro",
-    uf: "RJ",
+    id: "bauru",
+    nome: "Bauru",
+    uf: "SP",
     unidades: [
       {
-        id: "5820",
-        nome: "DM Centro - 5820",
+        id: "5084",
+        nome: "Bauru - 5084",
         responsaveis: [
-          { id: "p8", nome: "Fernanda Ribeiro", cargo: "Proprietária", email: "fernanda@delmatch.com", telefone: "(21) 99211-7788", iniciais: "FE", cor: "bg-emerald-500" },
-          { id: "p9", nome: "Lucas Pereira", cargo: "Caixa", email: "lucas@delmatch.com", telefone: "(21) 98654-3322", iniciais: "LU", cor: "bg-emerald-600" },
+          { id: "bau1", nome: "Felype Yukio Nakayama", cargo: "Motoboy Líder", email: "felype@delmatch.com", telefone: "(14) 99123-0005", iniciais: "FE", cor: "bg-zinc-800" },
+          { id: "bau2", nome: "Gabriele Cristina Huss", cargo: "Administrativo", email: "gabriele@delmatch.com", telefone: "(14) 99123-0006", iniciais: "GA", cor: "bg-pink-500" },
+          { id: "bau3", nome: "Matheus Ferreira Degelo", cargo: "Proprietário", email: "matheus@delmatch.com", telefone: "(14) 99123-0007", iniciais: "MA", cor: "bg-zinc-700" },
+          { id: "bau4", nome: "Melissa Carolina Ferreira", cargo: "Proprietário", email: "melissa@delmatch.com", telefone: "(14) 99123-0008", iniciais: "ME", cor: "bg-orange-500" },
         ],
       },
     ],
   },
   {
-    id: "bh",
-    nome: "Belo Horizonte",
+    id: "bebedouro",
+    nome: "Bebedouro",
+    uf: "SP",
+    unidades: [
+      {
+        id: "3440",
+        nome: "Bebedouro - 3440",
+        responsaveis: [
+          { id: "beb1", nome: "Alexandre Rodrigues Neves", cargo: "Proprietário", email: "alexandre@delmatch.com", telefone: "(17) 99123-0009", iniciais: "AL", cor: "bg-orange-500" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "botucatu",
+    nome: "Botucatu",
+    uf: "SP",
+    unidades: [
+      {
+        id: "bo1",
+        nome: "BOTUCATU",
+        responsaveis: [
+          { id: "bot1", nome: "Caio Henrique Silva", cargo: "Proprietário", email: "caio@delmatch.com", telefone: "(14) 99123-0010", iniciais: "CA", cor: "bg-orange-500" },
+          { id: "bot2", nome: "Lucas dos Santos São Romão", cargo: "Proprietário", email: "lucas@delmatch.com", telefone: "(14) 99123-0011", iniciais: "LU", cor: "bg-orange-600" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "catanduva",
+    nome: "Catanduva",
+    uf: "SP",
+    unidades: [
+      {
+        id: "6710",
+        nome: "Catanduva - 6710",
+        responsaveis: [
+          { id: "cat1", nome: "João Cesar Marqui Brocca", cargo: "Proprietário", email: "joao.cesar@delmatch.com", telefone: "(17) 99123-0012", iniciais: "JO", cor: "bg-orange-500" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "divinopolis",
+    nome: "Divinópolis",
     uf: "MG",
     unidades: [
       {
-        id: "5905",
-        nome: "DM Savassi - 5905",
+        id: "5341",
+        nome: "Divinópolis - 5341",
         responsaveis: [
-          { id: "p10", nome: "Juliana Castro", cargo: "Supervisora", email: "juliana@delmatch.com", telefone: "(31) 99845-6677", iniciais: "JU", cor: "bg-pink-500" },
+          { id: "div1", nome: "Darlon Gomes Fernandes", cargo: "Proprietário", email: "darlon@delmatch.com", telefone: "(37) 99123-0013", iniciais: "DA", cor: "bg-orange-500" },
+          { id: "div2", nome: "Paula Barbosa Ferreira", cargo: "Consultor de Vendas", email: "paula@delmatch.com", telefone: "(37) 99123-0014", iniciais: "PA", cor: "bg-orange-600" },
+          { id: "div3", nome: "Vitor Antonio Martins", cargo: "Consultor de Vendas", email: "vitor@delmatch.com", telefone: "(37) 99123-0015", iniciais: "VI", cor: "bg-orange-500" },
+          { id: "div4", nome: "Wesley Aparecido Candido", cargo: "Gerente Comercial", email: "wesley@delmatch.com", telefone: "(37) 99123-0016", iniciais: "WE", cor: "bg-orange-600" },
         ],
       },
     ],
   },
   {
-    id: "ctba",
-    nome: "Curitiba",
-    uf: "PR",
+    id: "jau",
+    nome: "Jaú",
+    uf: "SP",
     unidades: [
       {
-        id: "6001",
-        nome: "DM Batel - 6001",
+        id: "5085",
+        nome: "Jaú - 5085",
         responsaveis: [
-          { id: "p11", nome: "Marcos Vinícius Teixeira", cargo: "Proprietário", email: "marcos@delmatch.com", telefone: "(41) 99770-1199", iniciais: "MA", cor: "bg-indigo-500" },
+          { id: "jau1", nome: "Luciane Colli Tani", cargo: "Proprietário", email: "luciane@delmatch.com", telefone: "(14) 99123-0017", iniciais: "LU", cor: "bg-orange-500" },
+          { id: "jau2", nome: "Matheus Ferreira Degelo", cargo: "Proprietário", email: "matheus.jau@delmatch.com", telefone: "(14) 99123-0018", iniciais: "MA", cor: "bg-zinc-800" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "hortolandia",
+    nome: "Hortolândia",
+    uf: "SP",
+    unidades: [
+      {
+        id: "5767",
+        nome: "Hortolândia - 5767",
+        responsaveis: [
+          { id: "hor1", nome: "André Luis Machado", cargo: "Proprietário", email: "andre.luis@delmatch.com", telefone: "(19) 99123-0019", iniciais: "AN", cor: "bg-zinc-800" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "franca",
+    nome: "Franca",
+    uf: "SP",
+    unidades: [
+      {
+        id: "6450",
+        nome: "Franca - 6450",
+        responsaveis: [
+          { id: "fra1", nome: "Enzo A. Bronzatti", cargo: "Proprietário", email: "enzo@delmatch.com", telefone: "(16) 99123-0020", iniciais: "EN", cor: "bg-zinc-800" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "jundiai",
+    nome: "Jundiaí",
+    uf: "SP",
+    unidades: [
+      {
+        id: "6190",
+        nome: "Jundiaí - 6190",
+        responsaveis: [
+          { id: "jun1", nome: "Gustavo Ferreira Porfirio", cargo: "Motoboy Líder", email: "gustavo@delmatch.com", telefone: "(11) 99123-0021", iniciais: "GU", cor: "bg-orange-500" },
+          { id: "jun2", nome: "Vitor Thomazini", cargo: "Proprietário", email: "vitor.t@delmatch.com", telefone: "(11) 99123-0022", iniciais: "VI", cor: "bg-zinc-800" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "matao",
+    nome: "Matão",
+    uf: "SP",
+    unidades: [
+      {
+        id: "3575",
+        nome: "Matão - 3575",
+        responsaveis: [
+          { id: "mat1", nome: "Guilherme Alexandre Sanches", cargo: "Proprietário", email: "guilherme@delmatch.com", telefone: "(16) 99123-0023", iniciais: "GU", cor: "bg-orange-500" },
+          { id: "mat2", nome: "Michelle Cristine Pereira Sanches", cargo: "Proprietário", email: "michelle.p@delmatch.com", telefone: "(16) 99123-0024", iniciais: "MI", cor: "bg-orange-600" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "piracicaba",
+    nome: "Piracicaba",
+    uf: "SP",
+    unidades: [
+      {
+        id: "6743",
+        nome: "Piracicaba - 6743",
+        responsaveis: [
+          { id: "pir1", nome: "Júlia Fernanda Moro de Morais", cargo: "Proprietário", email: "julia@delmatch.com", telefone: "(19) 99123-0025", iniciais: "JÚ", cor: "bg-orange-500" },
+          { id: "pir2", nome: "Laura Cristine Moro de Morais", cargo: "Proprietário", email: "laura@delmatch.com", telefone: "(19) 99123-0026", iniciais: "LA", cor: "bg-orange-600" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ribeiraopreto",
+    nome: "Ribeirão Preto",
+    uf: "SP",
+    unidades: [
+      {
+        id: "5766",
+        nome: "Ribeirão Preto - 5766",
+        responsaveis: [
+          { id: "rib1", nome: "Ricardo da Silva Correa", cargo: "Proprietário", email: "ricardo@delmatch.com", telefone: "(16) 99123-0027", iniciais: "RI", cor: "bg-zinc-800" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "rioclaro",
+    nome: "Rio Claro",
+    uf: "SP",
+    unidades: [
+      {
+        id: "6189",
+        nome: "Rio Claro - 6189",
+        responsaveis: [
+          { id: "rio1", nome: "Alessandro Luiz Garcia", cargo: "Proprietário", email: "alessandro@delmatch.com", telefone: "(19) 99123-0028", iniciais: "AL", cor: "bg-orange-500" },
+          { id: "rio2", nome: "Márcia de Lima", cargo: "Proprietário", email: "marcia@delmatch.com", telefone: "(19) 99123-0029", iniciais: "MÁ", cor: "bg-orange-600" },
+          { id: "rio3", nome: "Murilo Lima De Andrade", cargo: "Proprietário", email: "murilo@delmatch.com", telefone: "(19) 99123-0030", iniciais: "MU", cor: "bg-orange-500" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "saocarlos",
+    nome: "São Carlos",
+    uf: "SP",
+    unidades: [
+      {
+        id: "3441",
+        nome: "São Carlos - 3441",
+        responsaveis: [
+          { id: "sc1", nome: "Alessandro Luiz Garcia", cargo: "Proprietário", email: "alessandro.sc@delmatch.com", telefone: "(16) 99123-0031", iniciais: "AL", cor: "bg-orange-500" },
+          { id: "sc2", nome: "Diego Oswaldo Ribeiro da Silva", cargo: "Proprietário", email: "diego@delmatch.com", telefone: "(16) 99123-0032", iniciais: "DI", cor: "bg-orange-600" },
+          { id: "sc3", nome: "Márcia de Lima", cargo: "Proprietário", email: "marcia.sc@delmatch.com", telefone: "(16) 99123-0033", iniciais: "MÁ", cor: "bg-orange-500" },
+          { id: "sc4", nome: "Murilo Lima De Andrade", cargo: "Proprietário", email: "murilo.sc@delmatch.com", telefone: "(16) 99123-0034", iniciais: "MU", cor: "bg-orange-600" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "sjrp",
+    nome: "São José do Rio Preto",
+    uf: "SP",
+    unidades: [
+      {
+        id: "6581",
+        nome: "São José do Rio Preto - 6581",
+        responsaveis: [
+          { id: "rp1", nome: "Alessandro Luiz Garcia", cargo: "Proprietário", email: "alessandro.rp@delmatch.com", telefone: "(17) 99123-0035", iniciais: "AL", cor: "bg-orange-500" },
+          { id: "rp2", nome: "Márcia de Lima", cargo: "Proprietário", email: "marcia.rp@delmatch.com", telefone: "(17) 99123-0036", iniciais: "MÁ", cor: "bg-orange-600" },
+          { id: "rp3", nome: "Matheus Porta Escobar", cargo: "Proprietário", email: "matheus.p@delmatch.com", telefone: "(17) 99123-0037", iniciais: "MA", cor: "bg-zinc-800" },
+          { id: "rp4", nome: "Murilo Lima De Andrade", cargo: "Proprietário", email: "murilo.rp@delmatch.com", telefone: "(17) 99123-0038", iniciais: "MU", cor: "bg-orange-500" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "varzeapaulista",
+    nome: "Várzea Paulista",
+    uf: "SP",
+    unidades: [
+      {
+        id: "vp1",
+        nome: "VÁRZEA PAULISTA",
+        responsaveis: [
+          { id: "vp1_1", nome: "Alessandro Luiz Garcia", cargo: "Proprietário", email: "alessandro.vp@delmatch.com", telefone: "(11) 99123-0039", iniciais: "AL", cor: "bg-orange-500" },
+          { id: "vp1_2", nome: "Márcia de Lima", cargo: "Proprietário", email: "marcia.vp@delmatch.com", telefone: "(11) 99123-0040", iniciais: "MÁ", cor: "bg-orange-600" },
+          { id: "vp1_3", nome: "Murilo Lima De Andrade", cargo: "Proprietário", email: "murilo.vp@delmatch.com", telefone: "(11) 99123-0041", iniciais: "MU", cor: "bg-orange-500" },
         ],
       },
     ],
@@ -121,11 +318,9 @@ interface UnidadeProps {
 
 export const Unidade = ({ onSelect }: UnidadeProps) => {
   // Tudo pré-selecionado por padrão — usuário só desmarca o que não quer
-  const [selecionados, setSelecionados] = useState<Set<string>>(
-    () => new Set(allResponsavelIds(CIDADES))
-  );
+  const [selecionados, setSelecionados] = useState<Set<string>>(new Set());
   const [busca, setBusca] = useState("");
-  const [expandidas, setExpandidas] = useState<Set<string>>(() => new Set(CIDADES.map((c) => c.id)));
+  const [expandidas, setExpandidas] = useState<Set<string>>(new Set());
 
   // Mapa: responsavelId -> {cidade, unidade} para resolver nomes no envio
   const respMap = useMemo(() => {
@@ -244,9 +439,7 @@ export const Unidade = ({ onSelect }: UnidadeProps) => {
       <div className="rounded-2xl border border-accent/30 bg-accent/5 px-4 py-3">
         <p className="text-[11px] uppercase tracking-widest text-accent">Etapa 2 de 4 · Chamado em massa</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          Todos os responsáveis estão{" "}
-          <strong className="text-foreground">pré-selecionados</strong>. Use os checkboxes para ajustar
-          quem deve receber este chamado.
+          Selecione abaixo as <strong className="text-foreground">cidades e responsáveis</strong> que devem receber a notificação deste chamado.
         </p>
       </div>
 

@@ -72,13 +72,29 @@ const Index = () => {
         return (
           <Descricao
             destino={state.admin || state.unidade}
-            onSubmit={(cat, prio, desc) =>
-              go("protocolo", { categoria: cat, prioridade: prio, descricao: desc, protocolo: "DM-" + Math.floor(2400 + Math.random() * 200) })
+            onSubmit={(cat, prio, desc, apoios) =>
+              go("protocolo", { 
+                categoria: cat, 
+                prioridade: prio, 
+                descricao: desc, 
+                apoios,
+                protocolo: "DM-" + Math.floor(2400 + Math.random() * 200) 
+              })
             }
           />
         );
       case "protocolo":
-        return <Protocolo protocolo={protocolo} onTrack={() => go("notificacao")} onHome={reset} />;
+        return (
+          <Protocolo
+            protocolo={protocolo}
+            cidade={state.cidade || "São Paulo"}
+            categoria={state.categoria}
+            responsaveis={state.responsaveis}
+            apoios={state.apoios}
+            onTrack={() => go("notificacao")}
+            onHome={reset}
+          />
+        );
       case "notificacao":
         return <Notificacao protocolo={protocolo} cidade={state.cidade || "São Paulo"} categoria={state.categoria} responsaveis={state.responsaveis} onAceitar={() => go("historico")} />;
       case "historico":
