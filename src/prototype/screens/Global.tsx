@@ -2,6 +2,8 @@ import { Activity, TrendingUp, AlertTriangle, CheckCircle2, ListFilter, User } f
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useProfile } from "../ProfileContext";
+import { useMemo } from "react";
+import { CONTATOS_UNIDADES } from "../data";
 
 export const Global = ({ onCidade }: { onCidade: () => void }) => {
   const { profile } = useProfile();
@@ -11,6 +13,38 @@ export const Global = ({ onCidade }: { onCidade: () => void }) => {
     { n: "Em Andamento", v: 12, c: "text-primary", b: "gradient-primary", h: "h-20" },
     { n: "Abertos", v: 7, c: "text-warning", b: "bg-warning", h: "h-14" },
   ];
+
+  // Lógica para extrair cidades únicas e gerar volumes dinâmicos para o Top 6
+  const topCidades = useMemo(() => {
+    // 1. Pega nomes únicos de cidades
+    const cidadesUnicas = Array.from(new Set(CONTATOS_UNIDADES.map(c => c.cidade)));
+    
+    // 2. Gera dados de volume fictícios para o protótipo
+    // Usamos um cálculo baseado no índice para que os valores fiquem consistentes ao recarregar
+    const dadosMapeados = cidadesUnicas.map((nome, index) => {
+      const volumeBase = 45 - (index * 7); // Decrescente para visual de escada
+      const risco = Math.max(0, index === 0 ? 8 : index === 1 ? 4 : 0); // Alguns com risco
+      
+      // Define a classe de altura (h-40, h-32, etc) proporcional ao volume
+      let alturaClass = "h-10";
+      if (volumeBase > 40) alturaClass = "h-40";
+      else if (volumeBase > 30) alturaClass = "h-32";
+      else if (volumeBase > 20) alturaClass = "h-24";
+      else if (volumeBase > 10) alturaClass = "h-16";
+
+      return {
+        n: nome,
+        v: Math.max(5, volumeBase),
+        r: risco,
+        h: alturaClass
+      };
+    });
+
+    // 3. Ordena por volume e pega o TOP 6
+    return dadosMapeados
+      .sort((a, b) => b.v - a.v)
+      .slice(0, 6);
+  }, []);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
@@ -32,39 +66,39 @@ export const Global = ({ onCidade }: { onCidade: () => void }) => {
         </div>
       </div>
 
-      {/* Meus KPIs de Impacto */}
+      {/* KPIs de Impacto da Operação */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* SLA em Risco Crítico */}
+        {/* Alertas Críticos de SLA */}
         <div className="relative overflow-hidden rounded-2xl border border-destructive/50 bg-destructive/10 p-6 shadow-[0_0_20px_rgba(239,68,68,0.15)]">
           <div className="absolute -right-2 -top-2 opacity-10">
             <AlertTriangle className="h-20 w-20 text-destructive" />
           </div>
           <div className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="h-4 w-4" />
-            <p className="text-[10px] font-bold uppercase tracking-widest">Meus em Risco</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest">Alertas Críticos (SLA)</p>
           </div>
-          <p className="mt-2 text-4xl font-black text-destructive">03</p>
-          <p className="mt-1 text-[10px] text-destructive/70 font-medium">Priorize estas tratativas agora</p>
+          <p className="mt-2 text-4xl font-black text-destructive">12</p>
+          <p className="mt-1 text-[10px] text-destructive/70 font-medium">Ações imediatas necessárias na rede</p>
         </div>
 
-        {/* Meus Chamados Abertos/Ativos */}
-        <div className="rounded-2xl border border-border bg-card p-6 border-l-4 border-l-primary">
+        {/* Backlog Ativo Global */}
+        <div className="rounded-2xl border border-border bg-card p-6 border-l-4 border-l-primary shadow-lg shadow-primary/5">
           <div className="flex items-center gap-2 text-primary">
             <ListFilter className="h-4 w-4" />
-            <p className="text-[10px] font-bold uppercase tracking-widest">Sob Minha Responsabilidade</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest">Backlog Ativo</p>
           </div>
-          <p className="mt-2 text-4xl font-black text-foreground">19</p>
-          <p className="mt-1 text-[10px] text-muted-foreground font-medium">Chamados aguardando interação</p>
+          <p className="mt-2 text-4xl font-black text-foreground">142</p>
+          <p className="mt-1 text-[10px] text-muted-foreground font-medium">Volume total em aberto no sistema</p>
         </div>
 
-        {/* Meus Resolvidos */}
+        {/* Total Resolvido Operação */}
         <div className="rounded-2xl border border-border bg-card p-6 border-l-4 border-l-success">
           <div className="flex items-center gap-2 text-success">
             <CheckCircle2 className="h-4 w-4" />
-            <p className="text-[10px] font-bold uppercase tracking-widest">Total Resolvido (Mês)</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest">Resolvidos (Operação / Mês)</p>
           </div>
-          <p className="mt-2 text-4xl font-black text-success">84</p>
-          <p className="mt-1 text-[10px] text-muted-foreground font-medium">Produtividade pessoal acumulada</p>
+          <p className="mt-2 text-4xl font-black text-success">1.240</p>
+          <p className="mt-1 text-[10px] text-muted-foreground font-medium">Eficiência global acumulada no período</p>
         </div>
       </div>
 
@@ -80,14 +114,7 @@ export const Global = ({ onCidade }: { onCidade: () => void }) => {
           </div>
           
           <div className="flex items-end justify-between gap-4 h-56 pt-6">
-            {[
-              { n: "São Paulo", v: 42, r: 8, h: "h-40" },
-              { n: "Araçatuba", v: 31, r: 4, h: "h-32" },
-              { n: "Rio de Janeiro", v: 28, r: 2, h: "h-28" },
-              { n: "BH", v: 19, r: 1, h: "h-20" },
-              { n: "Curitiba", v: 15, r: 0, h: "h-16" },
-              { n: "Salvador", v: 8, r: 0, h: "h-10" },
-            ].map((c) => (
+            {topCidades.map((c) => (
               <button key={c.n} onClick={onCidade} className="group flex flex-1 flex-col items-center gap-3">
                 <div className="flex w-full flex-col items-center justify-end h-full relative">
                   {c.r > 0 && (
@@ -143,32 +170,37 @@ export const Global = ({ onCidade }: { onCidade: () => void }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Atividade Recente do Atendente */}
+        {/* Ranking de Assuntos por Unidade */}
         <div className="col-span-1 lg:col-span-3 rounded-2xl border border-border bg-card p-6">
-          <div className="mb-4 flex items-center gap-2">
-            <Activity className="h-4 w-4 text-accent" />
-            <p className="text-sm font-bold uppercase tracking-wider">Atividade ao Vivo do Sistema</p>
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-accent" />
+              <p className="text-sm font-bold uppercase tracking-wider">Ranking de Assuntos Recorrentes (Top 6 Cidades)</p>
+            </div>
+            <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest bg-secondary/50 px-2 py-1 rounded">Consolidado</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 pt-2">
             {[
-              { c: "São Paulo", a: "Novo chamado #2451", t: "agora", type: "new" },
-              { c: "Araçatuba", a: "SLA em Risco Crítico", t: "5 min", type: "risk" },
-              { c: "Rio de Janeiro", a: "Chamado Resolvido #2398", t: "1h", type: "resolved" },
-              { c: "Belo Horizonte", a: "Técnico em deslocamento", t: "3h", type: "info" },
-              { c: "Curitiba", a: "Aguardando aprovação", t: "4h", type: "info" },
-              { c: "Porto Alegre", a: "Manutenção preventiva", t: "5h", type: "info" },
-            ].map((e, i) => (
-              <div key={i} className="flex items-start gap-3 rounded-xl border border-border/50 bg-secondary/30 p-3 hover:bg-secondary/50 transition-colors cursor-pointer">
-                <div className={cn(
-                  "mt-1 h-2 w-2 rounded-full",
-                  e.type === "new" ? "bg-primary animate-pulse" : e.type === "risk" ? "bg-destructive" : e.type === "resolved" ? "bg-success" : "bg-muted-foreground"
-                )} />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-foreground">{e.c}</p>
-                    <span className="text-[9px] text-muted-foreground font-mono">{e.t}</span>
+              { n: "Retorno por Devolução", v: 42, p: "w-[85%]", c: "bg-primary" },
+              { n: "Taxa de Deslocamento", v: 31, p: "w-[65%]", c: "bg-accent" },
+              { n: "Reembolso Loja", v: 19, p: "w-[40%]", c: "bg-warning" },
+              { n: "Outros Assuntos", v: 12, p: "w-[25%]", c: "bg-muted-foreground" },
+            ].map((item, i) => (
+              <div key={i} className="group space-y-2.5">
+                <div className="flex items-end justify-between">
+                  <div className="space-y-0.5">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">{item.n}</p>
+                    <p className="text-xs font-bold text-foreground/80">{item.v} chamados abertos</p>
                   </div>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{e.a}</p>
+                  <span className="text-xs font-mono font-bold text-accent">{item.p.match(/\d+/)?.[0]}%</span>
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-secondary overflow-hidden">
+                  <div className={cn(
+                    "h-full rounded-full transition-all duration-1000 ease-out group-hover:brightness-125",
+                    item.c,
+                    item.p
+                  )} />
                 </div>
               </div>
             ))}

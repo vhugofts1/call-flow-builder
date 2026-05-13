@@ -20,10 +20,9 @@ const FLOW: { id: ScreenId; label: string }[] = [
   { id: "unidade", label: "3b. Unidade" },
   { id: "descricao", label: "4. Descrição" },
   { id: "protocolo", label: "5. Protocolo" },
-  { id: "notificacao", label: "6. Atendente" },
-  { id: "historico", label: "7. Histórico" },
+  { id: "historico", label: "6. Histórico" },
+  { id: "resolucao", label: "7. Resolução" },
   { id: "global", label: "8. Global" },
-  { id: "resolucao", label: "9. Resolução" },
 ];
 
 interface ShellProps {
