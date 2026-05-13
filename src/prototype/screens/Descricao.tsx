@@ -31,7 +31,7 @@ const APOIO_SUGESTOES: ResponsavelInfo[] = [
 ];
 
 interface DescricaoProps {
-  onSubmit: (cat: string, prio: string, desc: string, apoio?: ResponsavelInfo) => void;
+  onSubmit: (cat: string, prio: string, desc: string, anexos: File[], apoio?: ResponsavelInfo[]) => void;
   destino?: string;
 }
 
@@ -232,7 +232,7 @@ export const Descricao = ({ onSubmit, destino }: DescricaoProps) => {
 
 
       <Button
-        onClick={() => onSubmit(cat, "Média", desc || "Chamado de teste do protótipo", apoios)}
+        onClick={() => onSubmit(cat, "Média", desc || "Chamado de teste do protótipo", anexos, apoios)}
         size="lg"
         className="mt-6 h-14 w-full rounded-2xl gradient-primary font-black text-primary-foreground text-sm uppercase tracking-widest shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
       >

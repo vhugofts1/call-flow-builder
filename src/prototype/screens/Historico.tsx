@@ -3,16 +3,24 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { FlowState } from "../types";
 import { useState, useMemo } from "react";
+import { CONTATOS_UNIDADES, CIDADES } from "../data";
+import { useProfile } from "../ProfileContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const ROWS_BASE = [
-  { p: "#2451", t: "Equipamento PDV", c: "Equipamento", s: "Em andamento", sla: "03:58", risk: false, resp: "GP", cidade: "Araçatuba" },
-  { p: "#2450", t: "Erro login sistema", c: "Sistema/TI", s: "Aberto", sla: "00:42", risk: true, resp: "AL", cidade: "Araçatuba" },
-  { p: "#2447", t: "Reposição embalagem", c: "Estoque", s: "Resolvido", sla: "—", risk: false, resp: "ML", cidade: "Araraquara" },
-  { p: "#2440", t: "Falha cobrança", c: "Financeiro", s: "Em andamento", sla: "01:15", risk: true, resp: "VA", cidade: "Bauru" },
-  { p: "#2438", t: "Treinamento novo func.", c: "Pessoas", s: "Resolvido", sla: "—", risk: false, resp: "JC", cidade: "Jundiaí" },
+  { p: "#2451", t: "Equipamento PDV", c: "Equipamento", s: "Em andamento", sla: "03:58", risk: false, resp: "GP", cidade: "Araçatuba", ownerId: "joao" },
+  { p: "#2450", t: "Erro login sistema", c: "Sistema/TI", s: "Aberto", sla: "00:42", risk: true, resp: "AL", cidade: "Araçatuba", ownerId: "marina" },
+  { p: "#2447", t: "Reposição embalagem", c: "Estoque", s: "Resolvido", sla: "—", risk: false, resp: "ML", cidade: "Araraquara", ownerId: "joao" },
+  { p: "#2440", t: "Falha cobrança", c: "Financeiro", s: "Em andamento", sla: "01:15", risk: true, resp: "VA", cidade: "Bauru", ownerId: "marina" },
+  { p: "#2438", t: "Treinamento novo func.", c: "Pessoas", s: "Resolvido", sla: "—", risk: false, resp: "JC", cidade: "Jundiaí", ownerId: "joao" },
 ];
-
-const CIDADES_ATIVAS = ["Araçatuba", "Araraquara", "Bauru", "Jundiaí", "Rio Claro", "São Carlos"];
 
 interface HistoricoProps {
   onSelect: () => void;
@@ -21,7 +29,16 @@ interface HistoricoProps {
 }
 
 export const Historico = ({ onSelect, onGlobal, chamadoNovo }: HistoricoProps) => {
+  const { profile } = useProfile();
   const [viewMode, setViewMode] = useState<"kanban" | "list">("kanban");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterMode, setFilterMode] = useState<"all" | "mine">("all");
+  
+  // 1. Extração dinâmica das cidades da lista completa (18 cidades)
+  const cidadesAtivas = useMemo(() => {
+    return CIDADES.map(c => c.nome).sort();
+  }, []);
+
   const [currentCity, setCurrentCity] = useState(
     chamadoNovo?.cidade ? chamadoNovo.cidade.split(",")[0].trim() : "Araçatuba"
   );
@@ -36,16 +53,32 @@ export const Historico = ({ onSelect, onGlobal, chamadoNovo }: HistoricoProps) =
         risk: false,
         novo: true,
         resp: "VC",
-        cidade: currentCity
+        cidade: currentCity,
+        ownerId: chamadoNovo.ownerId || profile.id
       }]
     : [];
   
   const allRows = [...novo, ...ROWS_BASE];
   
-  // Filtramos os chamados baseados na cidade selecionada
+  // 2. Filtramos os chamados baseados na cidade, dono E termo de busca
   const ROWS = useMemo(() => {
-    return allRows.filter(r => r.cidade === currentCity);
-  }, [currentCity, chamadoNovo]);
+    return allRows.filter(r => {
+      const isMine = r.ownerId === profile.id;
+      const matchesFilterMode = filterMode === "all" || isMine;
+      const matchesCity = r.cidade === currentCity;
+      const term = searchQuery.toLowerCase().trim();
+      
+      if (!term) return matchesCity && matchesFilterMode;
+
+      // Se houver busca, procuramos em Protocolo, Título ou Cidade
+      const matchesSearch = 
+        r.p.toLowerCase().includes(term) || 
+        r.t.toLowerCase().includes(term) || 
+        r.cidade.toLowerCase().includes(term);
+
+      return matchesSearch && matchesFilterMode;
+    });
+  }, [currentCity, chamadoNovo, searchQuery, filterMode, profile.id]);
 
   const columns = [
     { title: "Abertos", status: "Aberto", icon: <Clock className="h-4 w-4 text-primary" />, bg: "bg-primary/5", border: "border-primary/20" },
@@ -55,45 +88,72 @@ export const Historico = ({ onSelect, onGlobal, chamadoNovo }: HistoricoProps) =
 
   return (
     <div className="space-y-4">
-      {/* Barra de Troca Rápida de Cidades */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/50 border border-border whitespace-nowrap">
-          <MapPin className="h-3 w-3 text-primary" />
-          <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Unidades Ativas:</span>
-        </div>
-        {CIDADES_ATIVAS.map((cidade) => (
-          <button
-            key={cidade}
-            onClick={() => setCurrentCity(cidade)}
-            className={cn(
-              "px-4 py-1.5 rounded-full text-[11px] font-bold transition-all border whitespace-nowrap",
-              currentCity === cidade 
-                ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 scale-105" 
-                : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-primary"
-            )}
-          >
-            {cidade}
-            {cidade === "Araçatuba" && <span className="ml-2 inline-block h-1.5 w-1.5 rounded-full bg-destructive animate-pulse" />}
-          </button>
-        ))}
-      </div>
 
       {/* Header e Controles */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-4 rounded-2xl border border-border shadow-sm">
         <div className="flex items-center gap-3">
-          {/* Seletor de Cidade (Dropdown Simulado) */}
+          {/* Seletor de Cidade (Dropdown Funcional) */}
           <div className="relative group">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary/40 border border-border hover:border-primary/50 transition-all">
-              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <MapPin className="h-4 w-4 text-primary" />
-              </div>
-              <div className="flex flex-col items-start">
-                <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground leading-none mb-1">Unidade Selecionada</span>
-                <span className="text-sm font-bold text-foreground flex items-center gap-1">
-                  {currentCity}
-                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                </span>
-              </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary/40 border border-border hover:border-primary/50 transition-all focus:outline-none">
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <MapPin className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground leading-none mb-1">Unidade Selecionada</span>
+                    <span className="text-sm font-bold text-foreground flex items-center gap-1">
+                      {currentCity}
+                      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                    </span>
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56 rounded-2xl border-border bg-card/95 backdrop-blur-xl shadow-2xl">
+                <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground p-3">Escolher Unidade</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-border/50" />
+                <div className="max-h-[300px] overflow-y-auto no-scrollbar">
+                  {cidadesAtivas.map((cidade) => (
+                    <DropdownMenuItem
+                      key={cidade}
+                      onClick={() => {
+                        setCurrentCity(cidade);
+                        setSearchQuery("");
+                      }}
+                      className={cn(
+                        "flex items-center justify-between px-3 py-2.5 mx-1 my-0.5 rounded-xl cursor-pointer transition-colors",
+                        currentCity === cidade ? "bg-primary/10 text-primary font-bold" : "hover:bg-secondary text-muted-foreground"
+                      )}
+                    >
+                      <span className="text-xs">{cidade}</span>
+                      {currentCity === cidade && <div className="h-1.5 w-1.5 rounded-full bg-primary" />}
+                    </DropdownMenuItem>
+                  ))}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <div className="h-8 w-[1px] bg-border mx-1" />
+
+          <div className="flex bg-secondary/50 p-1 rounded-xl border border-border">
+            <button
+              onClick={() => setFilterMode("all")}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
+                filterMode === "all" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Todos
+            </button>
+            <button
+              onClick={() => setFilterMode("mine")}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
+                filterMode === "mine" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Meus
             </button>
           </div>
 
@@ -127,6 +187,8 @@ export const Historico = ({ onSelect, onGlobal, chamadoNovo }: HistoricoProps) =
           <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar chamado ou cidade..." 
               className="pl-9 pr-4 py-2 rounded-xl bg-secondary/40 border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 w-64"
             />

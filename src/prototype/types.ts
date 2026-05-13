@@ -5,7 +5,6 @@ export type ScreenId =
   | "unidade"
   | "descricao"
   | "protocolo"
-  | "notificacao"
   | "historico"
   | "global"
   | "resolucao";
@@ -31,4 +30,7 @@ export type FlowState = {
   protocolo?: string;
   responsaveis?: ResponsavelInfo[];
   sla?: string;
+  ownerId?: string;
+  ownerName?: string;
+  anexos?: { name: string; size: string; type: string; url?: string }[];
 };

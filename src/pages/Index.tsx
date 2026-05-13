@@ -13,6 +13,8 @@ import { Historico } from "@/prototype/screens/Historico";
 import { Global } from "@/prototype/screens/Global";
 import { Resolucao } from "@/prototype/screens/Resolucao";
 
+import { useProfile } from "@/prototype/ProfileContext";
+
 const titles: Record<ScreenId, { t: string; s: string; d: "mobile" | "desktop" }> = {
   home: { t: "Tela 1 · Home do solicitante", s: "Ponto de partida do fluxo — botão de ação principal", d: "desktop" },
   tipo: { t: "Tela 2 · Tipo de chamado", s: "Decisão: administrativo ou unidade", d: "desktop" },
@@ -25,7 +27,8 @@ const titles: Record<ScreenId, { t: string; s: string; d: "mobile" | "desktop" }
   global: { t: "Tela 8 · Visão global do suporte", s: "Dashboard executivo multi-cidade", d: "desktop" },
 };
 
-const Index = () => {
+const MainFlow = () => {
+  const { profile } = useProfile();
   const [screen, setScreen] = useState<ScreenId>("home");
   const [history, setHistory] = useState<ScreenId[]>([]);
   const [state, setState] = useState<FlowState>({});
@@ -71,15 +74,24 @@ const Index = () => {
         return (
           <Descricao
             destino={state.admin || state.unidade}
-            onSubmit={(cat, prio, desc, apoios) =>
+            onSubmit={(cat, prio, desc, anexosFiles, apoios) => {
+              const anexosData = anexosFiles.map(f => ({
+                name: f.name,
+                size: (f.size / 1024).toFixed(1) + " KB",
+                type: f.type,
+                url: URL.createObjectURL(f)
+              }));
               go("protocolo", { 
                 categoria: cat, 
                 prioridade: prio, 
                 descricao: desc, 
-                apoios,
-                protocolo: "DM-" + Math.floor(2400 + Math.random() * 200) 
-              })
-            }
+                responsaveis: apoios,
+                anexos: anexosData,
+                protocolo: "DM-" + Math.floor(2400 + Math.random() * 200),
+                ownerId: profile.id,
+                ownerName: profile.nome
+              });
+            }}
           />
         );
       case "protocolo":
@@ -104,17 +116,23 @@ const Index = () => {
   };
 
   return (
+    <Shell
+      current={screen}
+      onNavigate={jump}
+      onBack={history.length > 0 ? back : undefined}
+      title={meta.t}
+      subtitle={meta.s}
+      device={meta.d}
+    >
+      {renderScreen()}
+    </Shell>
+  );
+};
+
+const Index = () => {
+  return (
     <ProfileProvider>
-      <Shell
-        current={screen}
-        onNavigate={jump}
-        onBack={history.length > 0 ? back : undefined}
-        title={meta.t}
-        subtitle={meta.s}
-        device={meta.d}
-      >
-        {renderScreen()}
-      </Shell>
+      <MainFlow />
     </ProfileProvider>
   );
 };
