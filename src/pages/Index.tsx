@@ -85,7 +85,7 @@ const MainFlow = () => {
                 categoria: cat, 
                 prioridade: prio, 
                 descricao: desc, 
-                responsaveis: apoios,
+                apoios: apoios,
                 anexos: anexosData,
                 protocolo: "DM-" + Math.floor(2400 + Math.random() * 200),
                 ownerId: profile.id,

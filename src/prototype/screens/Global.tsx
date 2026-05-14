@@ -182,15 +182,19 @@ export const Global = ({ onCidade }: { onCidade: () => void }) => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 pt-2">
             {[
-              { n: "Retorno por Devolução", v: 42, p: "w-[85%]", c: "bg-primary" },
-              { n: "Taxa de Deslocamento", v: 31, p: "w-[65%]", c: "bg-accent" },
-              { n: "Reembolso Loja", v: 19, p: "w-[40%]", c: "bg-warning" },
-              { n: "Outros Assuntos", v: 12, p: "w-[25%]", c: "bg-muted-foreground" },
+              { n: "Retorno por Devolução", city: "Araçatuba", v: 42, p: "w-[85%]", c: "bg-primary" },
+              { n: "Taxa de Deslocamento", city: "Bauru", v: 31, p: "w-[65%]", c: "bg-accent" },
+              { n: "Reembolso Loja", city: "Araraquara", v: 19, p: "w-[40%]", c: "bg-warning" },
+              { n: "Atraso na Coleta", city: "Rio Claro", v: 15, p: "w-[30%]", c: "bg-destructive" },
+              { n: "Erro de Integração", city: "Jundiaí", v: 12, p: "w-[25%]", c: "bg-indigo-500" },
+              { n: "Outros Assuntos", city: "Rede", v: 8, p: "w-[15%]", c: "bg-muted-foreground" },
             ].map((item, i) => (
               <div key={i} className="group space-y-2.5">
                 <div className="flex items-end justify-between">
                   <div className="space-y-0.5">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">{item.n}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">
+                      {item.n} <span className="mx-1 text-primary/40">·</span> {item.city}
+                    </p>
                     <p className="text-xs font-bold text-foreground/80">{item.v} chamados abertos</p>
                   </div>
                   <span className="text-xs font-mono font-bold text-accent">{item.p.match(/\d+/)?.[0]}%</span>

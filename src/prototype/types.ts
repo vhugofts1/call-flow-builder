@@ -29,6 +29,7 @@ export type FlowState = {
   descricao?: string;
   protocolo?: string;
   responsaveis?: ResponsavelInfo[];
+  apoios?: ResponsavelInfo[];
   sla?: string;
   ownerId?: string;
   ownerName?: string;
