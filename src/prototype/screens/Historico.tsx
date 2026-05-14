@@ -1,4 +1,4 @@
-import { Filter, Eye, Clock, User, CheckCircle2, ChevronRight, X, MapPin, LayoutGrid, List, Search, ChevronDown } from "lucide-react";
+import { Filter, Eye, Clock, User, CheckCircle2, ChevronRight, X, MapPin, LayoutGrid, List, Search, ChevronDown, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { FlowState } from "../types";
@@ -25,10 +25,11 @@ const ROWS_BASE = [
 interface HistoricoProps {
   onSelect: () => void;
   onGlobal: () => void;
+  onNewChamado: () => void;
   chamadoNovo?: FlowState;
 }
 
-export const Historico = ({ onSelect, onGlobal, chamadoNovo }: HistoricoProps) => {
+export const Historico = ({ onSelect, onGlobal, onNewChamado, chamadoNovo }: HistoricoProps) => {
   const { profile } = useProfile();
   const [viewMode, setViewMode] = useState<"kanban" | "list">("kanban");
   const [searchQuery, setSearchQuery] = useState("");
@@ -88,6 +89,18 @@ export const Historico = ({ onSelect, onGlobal, chamadoNovo }: HistoricoProps) =
 
   return (
     <div className="space-y-4">
+
+      {/* Welcome Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card/80 backdrop-blur-xl p-6 rounded-2xl border border-border shadow-sm">
+        <div>
+          <h1 className="text-2xl font-black text-foreground tracking-tight">Olá, {profile.nome}!</h1>
+          <p className="text-sm text-muted-foreground mt-1">Bem-vindo(a) ao seu painel de gestão de chamados.</p>
+        </div>
+        <Button onClick={onNewChamado} size="lg" className="rounded-xl font-bold gradient-primary text-primary-foreground shadow-lg shadow-primary/20 gap-2 px-6">
+          <Plus className="h-5 w-5" />
+          Novo Chamado
+        </Button>
+      </div>
 
       {/* Header e Controles */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-4 rounded-2xl border border-border shadow-sm">

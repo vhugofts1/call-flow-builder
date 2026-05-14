@@ -2,27 +2,18 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ScreenId } from "./types";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Zap, ChevronDown, LogIn, LogOut } from "lucide-react";
+import { ChevronLeft, Zap } from "lucide-react";
 import { useProfile } from "./ProfileContext";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const FLOW: { id: ScreenId; label: string }[] = [
-  { id: "home", label: "1. Home" },
+  { id: "historico", label: "1. Painel" },
   { id: "tipo", label: "2. Tipo" },
   { id: "admin", label: "3a. Admin" },
   { id: "unidade", label: "3b. Unidade" },
   { id: "descricao", label: "4. Descrição" },
   { id: "protocolo", label: "5. Protocolo" },
-  { id: "historico", label: "6. Histórico" },
-  { id: "resolucao", label: "7. Resolução" },
-  { id: "global", label: "8. Global" },
+  { id: "resolucao", label: "6. Resolução" },
+  { id: "global", label: "7. Global" },
 ];
 
 interface ShellProps {
@@ -73,79 +64,22 @@ export const Shell = ({ current, onNavigate, onBack, title, subtitle, children, 
             ))}
           </div>
 
-          {/* Profile switcher */}
+          {/* Profile Display (Static for ChatMatch Integration) */}
           <div className="ml-auto">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className={cn(
-                    "flex items-center gap-2 rounded-full border px-2 py-1.5 transition-all hover:opacity-90",
-                    roleColor[profile.role]
-                  )}
-                >
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-card text-[10px] font-bold">
-                    {profile.iniciais}
-                  </span>
-                  <div className="hidden text-left leading-tight sm:block">
-                    <div className="text-[11px] font-semibold">{profile.nome}</div>
-                    <div className="text-[9px] uppercase tracking-wider opacity-80">{profile.role}</div>
-                  </div>
-                  <ChevronDown className="h-3.5 w-3.5 opacity-70" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64">
-                <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                  Ver protótipo como
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {profiles.map((p) => (
-                  <DropdownMenuItem
-                    key={p.id}
-                    onClick={() => setProfileId(p.id)}
-                    className={cn("flex items-start gap-3 py-2", profile.id === p.id && "bg-secondary")}
-                  >
-                    <span
-                      className={cn(
-                        "flex h-8 w-8 items-center justify-center rounded-full border text-[11px] font-bold",
-                        roleColor[p.role]
-                      )}
-                    >
-                      {p.iniciais}
-                    </span>
-                    <div className="leading-tight">
-                      <div className="text-sm font-semibold">{p.nome}</div>
-                      <div className="text-[10px] text-muted-foreground">{p.cargo}</div>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                {authedAtendente ? (
-                  <>
-                    <DropdownMenuItem
-                      onClick={() => setProfileId("auth")}
-                      className={cn("flex items-start gap-3 py-2", profile.id === authedAtendente.id && "bg-secondary")}
-                    >
-                      <span className={cn("flex h-8 w-8 items-center justify-center rounded-full border text-[11px] font-bold", roleColor.atendente)}>
-                        {authedAtendente.iniciais}
-                      </span>
-                      <div className="leading-tight">
-                        <div className="text-sm font-semibold">{authedAtendente.nome} <span className="text-[9px] text-success">● logado</span></div>
-                        <div className="text-[10px] text-muted-foreground">{authedAtendente.cargo}</div>
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={signOut} className="gap-2 text-destructive focus:text-destructive">
-                      <LogOut className="h-4 w-4" /> Sair da conta
-                    </DropdownMenuItem>
-                  </>
-                ) : (
-                  <DropdownMenuItem asChild>
-                    <Link to="/login-atendente" className="gap-2">
-                      <LogIn className="h-4 w-4" /> Entrar como atendente
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div
+              className={cn(
+                "flex items-center gap-2 rounded-full border px-3 py-1.5",
+                roleColor[profile.role]
+              )}
+            >
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-card text-[10px] font-bold">
+                {profile.iniciais}
+              </span>
+              <div className="hidden text-left leading-tight sm:block">
+                <div className="text-[11px] font-semibold">{profile.nome}</div>
+                <div className="text-[9px] uppercase tracking-wider opacity-80">{profile.role}</div>
+              </div>
+            </div>
           </div>
         </div>
       </header>

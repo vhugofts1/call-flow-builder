@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Shell } from "@/prototype/Shell";
 import { ProfileProvider } from "@/prototype/ProfileContext";
 import { ScreenId, FlowState } from "@/prototype/types";
-import { Home } from "@/prototype/screens/Home";
 import { Tipo } from "@/prototype/screens/Tipo";
 import { Admin } from "@/prototype/screens/Admin";
 import { Unidade } from "@/prototype/screens/Unidade";
@@ -16,20 +15,19 @@ import { Resolucao } from "@/prototype/screens/Resolucao";
 import { useProfile } from "@/prototype/ProfileContext";
 
 const titles: Record<ScreenId, { t: string; s: string; d: "mobile" | "desktop" }> = {
-  home: { t: "Tela 1 · Home do solicitante", s: "Ponto de partida do fluxo — botão de ação principal", d: "desktop" },
-  tipo: { t: "Tela 2 · Tipo de chamado", s: "Decisão: administrativo ou unidade", d: "desktop" },
-  admin: { t: "Tela 3a · Selecionar área administrativa", s: "Caminho 'Administrativo'", d: "desktop" },
-  unidade: { t: "Tela 3b · Selecionar unidade", s: "Seleção em massa: empresas (cidades) + responsáveis", d: "desktop" },
-  descricao: { t: "Tela 4 · Descrição do chamado", s: "Categoria, prioridade e detalhes", d: "desktop" },
-  protocolo: { t: "Tela 5 · Protocolo gerado", s: "Confirmação + SLA iniciado", d: "desktop" },
-  historico: { t: "Tela 6 · Histórico por cidade", s: "Gestão de chamados ativos da cidade", d: "desktop" },
-  resolucao: { t: "Tela 7 · Visualizar chamado", s: "Acompanhamento em tempo real + histórico de tratativas", d: "desktop" },
-  global: { t: "Tela 8 · Visão global do suporte", s: "Dashboard executivo multi-cidade", d: "desktop" },
+  historico: { t: "1. Painel Principal", s: "Gestão de chamados e nova solicitação", d: "desktop" },
+  tipo: { t: "2. Tipo de chamado", s: "Decisão: administrativo ou unidade", d: "desktop" },
+  admin: { t: "3a. Selecionar área administrativa", s: "Caminho 'Administrativo'", d: "desktop" },
+  unidade: { t: "3b. Selecionar unidade", s: "Seleção em massa: empresas (cidades) + responsáveis", d: "desktop" },
+  descricao: { t: "4. Descrição do chamado", s: "Categoria, prioridade e detalhes", d: "desktop" },
+  protocolo: { t: "5. Protocolo gerado", s: "Confirmação + SLA iniciado", d: "desktop" },
+  resolucao: { t: "6. Visualizar chamado", s: "Acompanhamento em tempo real + histórico de tratativas", d: "desktop" },
+  global: { t: "7. Visão global do suporte", s: "Dashboard executivo multi-cidade", d: "desktop" },
 };
 
 const MainFlow = () => {
   const { profile } = useProfile();
-  const [screen, setScreen] = useState<ScreenId>("home");
+  const [screen, setScreen] = useState<ScreenId>("historico");
   const [history, setHistory] = useState<ScreenId[]>([]);
   const [state, setState] = useState<FlowState>({});
 
@@ -54,7 +52,7 @@ const MainFlow = () => {
   const reset = () => {
     setHistory([]);
     setState({});
-    setScreen("home");
+    setScreen("historico");
   };
 
   const meta = titles[screen];
@@ -62,8 +60,6 @@ const MainFlow = () => {
 
   const renderScreen = () => {
     switch (screen) {
-      case "home":
-        return <Home onOpen={() => go("tipo")} />;
       case "tipo":
         return <Tipo onSelect={(t) => go(t === "admin" ? "admin" : "unidade", { tipo: t })} />;
       case "admin":
@@ -107,7 +103,7 @@ const MainFlow = () => {
           />
         );
       case "historico":
-        return <Historico chamadoNovo={state} onSelect={() => go("resolucao")} onGlobal={() => go("global")} />;
+        return <Historico chamadoNovo={state} onSelect={() => go("resolucao")} onGlobal={() => go("global")} onNewChamado={() => go("tipo")} />;
       case "resolucao":
         return <Resolucao state={state} onFinalizar={reset} />;
       case "global":

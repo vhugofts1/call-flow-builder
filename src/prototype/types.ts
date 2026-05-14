@@ -1,5 +1,4 @@
 export type ScreenId =
-  | "home"
   | "tipo"
   | "admin"
   | "unidade"
