@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Paperclip, Plus, Image, UserPlus, Check, Search as SearchIcon, X } from "lucide-react";
+import { Paperclip, Plus, Image, UserPlus, Check, Search as SearchIcon, X, AlertCircle, Copy } from "lucide-react";
+import { toast } from "sonner";
 import { ResponsavelInfo } from "../types";
 import { cn } from "@/lib/utils";
 import { MASTER_CONTATOS } from "../data";
@@ -19,8 +20,25 @@ Entregador informa que foi até o local da entrega, porém cliente não encontra
 
 Entregador: Douglas José Siqueira
 OS: 698945774`,
-  "Taxa de Deslocamento": "",
-  "Reembolso Loja": "",
+  "Taxa de Deslocamento": `Olá. Tudo bem?
+O Entregador(a) coletou o pedido na loja, porém, o destino o localizador do GPS mandou o mesmo para o endereço incorreto. O mesmo se deslocou até o endereço informado na OS, e deu continuidade na rota. Após finalizada, nos avisou. Por gentileza, adicione a taxa de deslocamento.
+
+Entregador: Thomaz Cesar Bin
+OS: 705083710`,
+  "Reembolso Loja": `Olá, tudo bem?
+Loja solicita o reembolso do pedido
+
+A loja informa que o pedido em questão não foi entregue ao cliente final gerando uma insatisfação. O pedido foi aceito pelo entregador às 21:15:50, porém até as 22:18 o pedido não havia sido entregue ao cliente. 
+
+Em tratativa, o suporte não obteve contato com o entregador.
+
+Podem verificar por gentileza?
+
+Reembolso do pedido no valor de R$ 100,97
+
+Entregador: Juliany Sousa Da Silva
+Estabelecimento: SEO ESPETO
+OS: 699525956`,
   "Outros": "",
 };
 
@@ -83,6 +101,23 @@ export const Descricao = ({ onSubmit, destino }: DescricaoProps) => {
       if (ok) setDesc(novoTemplate);
     }
   };
+
+  // Extração dinâmica de dados da descrição para os alertas
+  const extractedData = useMemo(() => {
+    const entregadorMatch = desc.match(/Entregador:\s*(.*)/i);
+    const osMatch = desc.match(/OS:\s*(.*)/i);
+    const lojaMatch = desc.match(/Estabelecimento:\s*(.*)/i);
+    
+    const rawOs = osMatch ? osMatch[1].trim() : "12246";
+    const cleanOs = rawOs.startsWith("#") ? rawOs.slice(1) : rawOs;
+
+    return {
+      nome: entregadorMatch ? entregadorMatch[1].trim() : "[Nome do Entregador]",
+      primeiroNome: entregadorMatch ? entregadorMatch[1].trim().split(" ")[0] : "Entregador",
+      os: cleanOs,
+      loja: lojaMatch ? lojaMatch[1].trim() : "SEO ESPETO"
+    };
+  }, [desc]);
 
   return (
     <div className="flex h-[760px] flex-col gradient-dark p-5 no-scrollbar overflow-y-auto">
@@ -188,6 +223,73 @@ export const Descricao = ({ onSubmit, destino }: DescricaoProps) => {
             </div>
           )}
         </div>
+
+        {/* Alerta de Procedimento para Reembolso */}
+        {cat === "Reembolso Loja" && (
+          <div className="rounded-2xl border border-amber-500/50 bg-amber-500/10 p-5 space-y-4 animate-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center gap-2 text-amber-500">
+              <AlertCircle className="h-5 w-5" />
+              <p className="text-[11px] font-black uppercase tracking-widest">Procedimento Obrigatório (ChatMatch)</p>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="rounded-xl bg-background/50 p-3 border border-amber-500/20">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[9px] font-black text-amber-500 uppercase tracking-tighter">1. Enviar ao Responsável</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[8px] font-bold text-amber-600/70 italic bg-amber-500/5 px-1.5 py-0.5 rounded">
+                      Detectado: {extractedData.nome} | OS: #{extractedData.os}
+                    </span>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-6 w-6 text-amber-500 hover:bg-amber-500/20"
+                      onClick={() => {
+                        const text = `Olá, tudo bem? Aqui é o Victor do suporte da Del Match. Foi aberto um chamado de Reembolso pela loja: #${extractedData.os} - Deixei tudo especificado no chamado. Poderia por gentileza bloquear a carteira de créditos do entregador em questão?\n\nObs: Assim que for validado o reembolso para o lojista, por favor anexar comprovante de pagamento.\nObrigado!\n\nEntregador: ${extractedData.nome}`;
+                        navigator.clipboard.writeText(text);
+                        toast.success("Texto para o Responsável copiado!");
+                      }}
+                    >
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+                <p className="text-[10px] leading-relaxed text-muted-foreground italic">
+                  "Olá, tudo bem? Aqui é o Victor do suporte da Del Match..."
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-background/50 p-3 border border-amber-500/20">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[9px] font-black text-amber-500 uppercase tracking-tighter">2. Enviar ao Entregador</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[8px] font-bold text-amber-600/70 italic bg-amber-500/5 px-1.5 py-0.5 rounded">
+                      Loja: {extractedData.loja} | OS: #{extractedData.os}
+                    </span>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-6 w-6 text-amber-500 hover:bg-amber-500/20"
+                      onClick={() => {
+                        const text = `Olá ${extractedData.primeiroNome}, tudo bem? Aqui é o suporte/monitoramento da Del Match. Foi aberto um chamado: #${extractedData.os} a pedido da empresa ${extractedData.loja} para o reembolso do pedido, gerando uma insatisfação do cliente final. Será analisado pela liderança todas as tratativas! Sendo necessários, estamos à disposição!`;
+                        navigator.clipboard.writeText(text);
+                        toast.success("Texto para o Entregador copiado!");
+                      }}
+                    >
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+                <p className="text-[10px] leading-relaxed text-muted-foreground italic">
+                  "Olá, tudo bem? Aqui é o suporte/monitoramento da Del Match..."
+                </p>
+              </div>
+            </div>
+            <p className="text-[9px] text-amber-500/70 font-medium italic text-center">
+              ⚠️ Informe a liderança sobre o travamento da carteira antes de prosseguir.
+            </p>
+          </div>
+        )}
 
         {/* Descrição */}
         <div>
